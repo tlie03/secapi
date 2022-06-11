@@ -1,0 +1,24 @@
+import pandas as pd
+import os
+
+
+FILE_NAME = 'ticker_to_cik_mapping.csv'
+DATA_DIRECTORY = os.path.dirname(os.path.realpath(__file__)) + '/' + 'resources'
+
+
+class KeyMapper:
+
+    def __init__(self):
+        self._data = pd.read_csv(DATA_DIRECTORY + '/' + FILE_NAME)
+
+
+    def get_cik(self, ticker_symbol):
+        if self.has_cik(ticker_symbol):
+            return self._data[ticker_symbol]
+
+        else:
+            raise IndexError('ticker-symbol not found')
+
+
+    def has_cik(self, ticker_symbol):
+        return ticker_symbol in self._data.index
