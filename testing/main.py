@@ -1,12 +1,8 @@
 import time
 
-from secapi.util.date_range import DateRange
 import threading
-from secapi.util.request_limiter import limited_request
+from secapi.util.request.request_limitation import limited_request
 from testing.helper.timer import timer
-
-
-daterange = DateRange('2000-02-02', '2022-02-02')
 
 URL = r'https://www.sec.gov/edgar/browse/?CIK=789019&owner=exclude'
 HEADER = {'User-Agent': 'myUserAgent'}
@@ -14,6 +10,7 @@ HEADER = {'User-Agent': 'myUserAgent'}
 counter = 0
 thread_count = 2
 requests_per_thread = 10
+
 
 
 @timer
