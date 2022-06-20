@@ -14,7 +14,8 @@ class KeyMapper:
 
     def get_cik(self, ticker_symbol):
         if self.has_cik(ticker_symbol):
-            return self._data[ticker_symbol]
+            cik = self._data.at[ticker_symbol, 'cik']
+            return str(cik)
         else:
             raise IndexError('ticker-symbol not found')
 
