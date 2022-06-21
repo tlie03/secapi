@@ -4,6 +4,7 @@ import os
 
 FILE_NAME = 'ticker_to_cik_mapping.csv'
 DATA_DIRECTORY = os.path.dirname(os.path.realpath(__file__)) + '/' + 'resources'
+CIK_COLUMN = 'cik'
 
 
 class KeyMapper:
@@ -14,7 +15,7 @@ class KeyMapper:
 
     def get_cik(self, ticker_symbol):
         if self.has_cik(ticker_symbol):
-            cik = self._data.at[ticker_symbol, 'cik']
+            cik = self._data.at[ticker_symbol, CIK_COLUMN]
             return str(cik)
         else:
             raise IndexError('ticker-symbol not found')

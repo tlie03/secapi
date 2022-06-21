@@ -1,4 +1,4 @@
-from secapi.util.date.range_borders import Date, FromInfinity, ToInfinity
+from secapi.util.daterange.range_borders import Date, FromInfinity, ToInfinity
 
 
 class DateRange:

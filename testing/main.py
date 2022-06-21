@@ -1,13 +1,18 @@
 import time
 from secapi.filing_query.filing_query import FilingQuery
 import threading
-from secapi.util.request.request_limitation import limited_request
+from secapi.util.limiter.request_limitation import limited_request
+from testing.helper.timer import timer
 
 
-form_types = ['3', '4', '5']
 filing_information = ['accessionNumber', 'filingDate', 'form']
 fq = FilingQuery()
-filings = fq.get_filings('MSFT', date_from='2017-12-12', date_to='2020-12-12', form_types=form_types, filing_information=filing_information)
 
-for filing in filings:
-    print(filing)
+
+def get_filings():
+    return fq.get_filings('MSFT')
+
+
+dict_ = {'a': [1, 2, 9, 7], 'b': ['2', 'asdf', '234', '2ed2'], 'c': [121.1, 132.431, 12.32, 123.3]}
+
+
