@@ -23,3 +23,7 @@ class KeyMapper:
 
     def has_cik(self, ticker_symbol):
         return ticker_symbol in self._data.index
+
+
+    def update_cik_list(self):
+        pass  # todo implement

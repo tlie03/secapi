@@ -1,5 +1,5 @@
 
-FORM_TYPES = ['3', '4', '5']  # todo add filing types
+FORM_TYPES = ['3', '4', '5']  # todo add filing form types
 
 FILING_INFORMATION_KEYS = ['accessionNumber',
                            'filingDate',

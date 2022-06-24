@@ -1,5 +1,5 @@
 from secapi.util.keymapper.key_mapper import KeyMapper
-from secapi.filing_query.constants import FORM_TYPES, FILING_INFORMATION_KEYS
+from secapi.filing_query.sec_constants import FORM_TYPES, FILING_INFORMATION_KEYS
 from secapi.util.daterange.date_range import DateRange
 from secapi.util.limiter.request_limitation import limited_request
 from secapi.util.filetypes.file_types import JSON_FILE
@@ -77,9 +77,9 @@ class FilingQuery:
         # parse files
         files = submissions_dict['filings']['files']
         for file in files:
-            file_date_range = DateRange(date_from=file['filingFrom'], date_to=file['filingTo'])
+            filing_date_range = DateRange(date_from=file['filingFrom'], date_to=file['filingTo'])
 
-            if self.date_range.intersect(file_date_range):
+            if self.date_range.intersect(filing_date_range):
                 url = BASE_URL_SUBMISSIONS + file['name']
                 response = limited_request(url=url, header=HEADER)
                 data = response.json()
