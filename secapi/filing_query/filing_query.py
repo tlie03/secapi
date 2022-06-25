@@ -60,7 +60,6 @@ class FilingQuery:
 
         response = limited_request(url=submissions_url, header=HEADER)
         submissions_dict = response.json()
-
         return self._parse_submissions(submissions_dict)
 
 

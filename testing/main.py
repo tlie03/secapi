@@ -34,4 +34,12 @@ print(filing_link)
 response = requests.get(url=filing_link, headers={'User-Agent': 'myUserAgent'})
 soup = BeautifulSoup(response.text, 'lxml')
 body = soup.find('body')
-print(body.prettify())
+
+tables = body.findChildren('table', recursive=False)
+relevant_tables = tables[1:4]
+
+meta_data = relevant_tables[0]
+non_derivative = relevant_tables[1]
+derivative = relevant_tables[2]
+
+print(meta_data.prettify())
