@@ -1,9 +1,5 @@
-from secapi.util.keymapper.key_mapper import KeyMapper
-from secapi.util.daterange.date_range import DateRange
-from secapi.util.limiter.request_limitation import limited_request
-from secapi.util.filetypes.file_types import JSON_FILE
+from secapi.util import (DateRange, KeyMapper, limited_request, JSON_FILE)
 from warnings import warn
-
 
 FILING_INFORMATION_KEYS = ['accessionNumber',
                            'filingDate',
