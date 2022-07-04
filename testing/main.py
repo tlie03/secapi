@@ -45,5 +45,3 @@ data = dict['ownershipDocument']['nonDerivativeTable']['nonDerivativeTransaction
 for key in data:
     print(key)
 
-dataframe = pd.DataFrame.from_dict(data)
-print(dataframe)
