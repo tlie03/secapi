@@ -12,7 +12,6 @@ filing_information = ['accessionNumber', 'filingDate', 'form', 'primaryDocument'
 fq = FilingQuery()
 
 
-@timer
 def get_filings():
     return fq.get_filings('AAPL', date_from="2004-01-01", date_to="2023-12-20", form_types=['4'], filing_information=filing_information)
 

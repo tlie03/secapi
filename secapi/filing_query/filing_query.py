@@ -53,7 +53,7 @@ class FilingQuery:
         if filing_information is None:
             self._filing_information = FILING_INFORMATION_KEYS
         else:
-            # this way the ordering of the keys is always the same which is important for the parsing process
+            # this way the ordering of the keys is always the same so the query returns consistent and easy to read data
             cache_list = []
             for key in FILING_INFORMATION_KEYS:
                 if key in filing_information:
