@@ -42,6 +42,3 @@ response = requests.get(url=filing_link, headers={'User-Agent': 'myUserAgent'})
 dict = xmltodict.parse(response.text)
 data = dict['ownershipDocument']['nonDerivativeTable']['nonDerivativeTransaction']
 
-for key in data:
-    print(key)
-
