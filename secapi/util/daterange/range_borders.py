@@ -37,9 +37,6 @@ class Date:
     def __ge__(self, other):
         return self > other or self == other
 
-    def __add__(self, other):
-        self._date += timedelta(other)
-
 
 class FromInfinity:
 

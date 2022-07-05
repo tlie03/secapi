@@ -24,15 +24,6 @@ class DateRange:
         date = Date(item)
         return self._date_from <= date <= self._date_to
 
-    def __iter__(self):
-        if not self._is_finite:
-            raise ValueError('can not iterate over infinite DateRange')
-        else:
-            iteration = self._date_from
-            while iteration <= self._date_to:
-                yield iteration
-                iteration += 1
-
     def date_from(self):
         return self._date_from
 

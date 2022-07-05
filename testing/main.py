@@ -1,10 +1,6 @@
 import requests
 import pandas as pd
-from secapi.filing_query.filing_query import FilingQuery
-from testing.helper.timer import timer
-import xmltodict
-
-
+from secapi import FilingQuery, Form4Parser
 
 ARCHIVE_URL = r'https://www.sec.gov/Archives/edgar/data/'
 
@@ -13,7 +9,8 @@ fq = FilingQuery()
 
 
 def get_filings():
-    return fq.get_filings('AAPL', date_from="2004-01-01", date_to="2023-12-20", form_types=['4'], filing_information=filing_information)
+    return fq.get_filings('MSFT', date_from="2016-01-01", date_to="2023-12-20", form_types=['4/A', '4'],
+                          filing_information=filing_information)
 
 
 def build_xml_link(f):
@@ -30,10 +27,23 @@ def build_html_link(f):
     return ARCHIVE_URL + cik + '/' + acn + '/' + doc
 
 
+
+"""
 filings = get_filings()
-filing = filings[-20]
+fp = Form4Parser()
+c = 0
+keys = []
 
-filing_link = build_xml_link(filing)
-print(build_html_link(filing))
-print(filing_link)
+for filing in filings:
+    c += 1
+    data = fp.parse_filing(filing)
+    if 'nonDerivativeHolding' in data['nonDerivativeTable'].keys():
+        print(build_html_link(filing))
+        for key in data['nonDerivativeTable'].keys():
+            print(key)
+            print(data['nonDerivativeTable'][key])
 
+
+    print(f'filings parsed: {c}/{len(filings)}')
+    print(f'keys found: {keys}')
+"""
