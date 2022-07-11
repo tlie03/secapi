@@ -1,4 +1,4 @@
-from secapi.util import (DateRange, KeyMapper, limited_request, JSON_FILE)
+from secapi.util import (DateRange, KeyMapper, Request, JSON_FILE)
 from warnings import warn
 
 FILING_INFORMATION_KEYS = ['accessionNumber',
@@ -17,7 +17,6 @@ FILING_INFORMATION_KEYS = ['accessionNumber',
                            'primaryDocDescription']
 
 BASE_URL_SUBMISSIONS = r'https://data.sec.gov/submissions/'
-HEADER = {'User-Agent': 'myUserAgent'}
 
 CIK_STRING = r'CIK'
 REQUIRED_CIK_LENGTH = 10
@@ -33,6 +32,7 @@ class FilingQuery:
         self._date_range = None
 
         self._key_mapper = KeyMapper()
+
 
     def get_filings(self, ticker_symbol, date_from=None, date_to=None, form_types=None, filing_information=None):
         # set parsing parameters
@@ -69,7 +69,7 @@ class FilingQuery:
         cik = ('0' * length_diff) + self._cik
         submissions_url = BASE_URL_SUBMISSIONS + CIK_STRING + cik + JSON_FILE
 
-        response = limited_request(url=submissions_url, header=HEADER)
+        response = Request.sec_request(url=submissions_url)
         submissions_dict = response.json()
         return self._parse_submissions(submissions_dict)
 
@@ -103,7 +103,7 @@ class FilingQuery:
 
             if self._date_range.intersect(filing_date_range):
                 url = BASE_URL_SUBMISSIONS + file['name']
-                response = limited_request(url=url, header=HEADER)
+                response = Request.sec_request(url=url)
                 data = response.json()
                 filings += self._filter_filings(data)
 

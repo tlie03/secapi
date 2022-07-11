@@ -7,4 +7,4 @@ from .filetypes.file_types import (JSON_FILE,
                                    is_xml_file)
 
 from .keymapper.key_mapper import KeyMapper
-from .limiter.request_limitation import limited_request
+from .request.request import Request
