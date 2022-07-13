@@ -115,7 +115,7 @@ class FilingQuery:
 
         dates = block_data['filingDate']
         forms = block_data['form']
-        for i, (date, form) in enumerate(zip(dates, forms)):
+        for i, date, form in enumerate(zip(dates, forms)):
 
             if date in self._date_range and self._form_checker(form):
                 filing = {'tickerSymbol': self._ticker_symbol, 'cik': self._cik}

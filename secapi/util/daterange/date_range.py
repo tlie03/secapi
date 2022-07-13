@@ -17,7 +17,7 @@ class DateRange:
         self._is_finite = not (date_from is None or date_to is None)
 
         if self._is_finite:
-            if self._date_to < self._date_from:
+            if self._date_to <= self._date_from:
                 raise ValueError('date_to must be equal or greater than date_from')
 
     def __contains__(self, item):

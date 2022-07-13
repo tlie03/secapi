@@ -1,5 +1,5 @@
 from datetime import datetime
-from secapi.util.limiter.request import Request
+from secapi.util import Request
 import xmltodict
 import re
 
