@@ -1,29 +1,28 @@
-import pandas as pd
-import os
+from secapi.util import Request
 
 
-FILE_NAME = 'ticker_to_cik_mapping.csv'
-DATA_DIRECTORY = os.path.dirname(os.path.realpath(__file__)) + '/' + 'resources'
-CIK_COLUMN = 'cik'
+SEC_CIK_TICKERS_DATA = r"https://www.sec.gov/files/company_tickers.json"
 
 
-class KeyMapper:
+def get_cik(ticker_symbol):
+    ts = ticker_symbol.upper()
+    response = Request.sec_request(SEC_CIK_TICKERS_DATA)
+    data = response.json()
 
-    def __init__(self):
-        self._data = pd.read_csv(DATA_DIRECTORY + '/' + FILE_NAME)
+    for entry in data:
+        if entry['ticker'] == ts:
+            return entry['cik_str']
 
-
-    def get_cik(self, ticker_symbol):
-        if self.has_cik(ticker_symbol):
-            cik = self._data.at[ticker_symbol, CIK_COLUMN]
-            return str(cik)
-        else:
-            raise IndexError('ticker-symbol not found')
+    raise ValueError(f'ticker symbol {ts} not found')
 
 
-    def has_cik(self, ticker_symbol):
-        return ticker_symbol in self._data.index
+def has_cik(ticker_symbol):
+    ts = ticker_symbol.upper()
+    response = Request.sec_request(SEC_CIK_TICKERS_DATA)
+    data = response.json()
 
+    for entry in data:
+        if entry['ticker'] == ts:
+            return True
 
-    def update_cik_list(self):
-        pass  # todo implement
+    return False

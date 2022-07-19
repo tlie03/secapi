@@ -1,4 +1,4 @@
-from secapi.util import (DateRange, KeyMapper, Request, JSON_FILE)
+from secapi.util import (DateRange, Request, JSON_FILE, get_cik, has_cik)
 from warnings import warn
 
 FILING_INFORMATION_KEYS = ['accessionNumber',
@@ -31,13 +31,10 @@ class FilingQuery:
         self._form_checker = None
         self._date_range = None
 
-        self._key_mapper = KeyMapper()
-
-
     def get_filings(self, ticker_symbol, date_from=None, date_to=None, form_types=None, filing_information=None):
         # set parsing parameters
         self._ticker_symbol = ticker_symbol
-        self._cik = self._key_mapper.get_cik(ticker_symbol)
+        self._cik = get_cik(ticker_symbol)
         self._date_range = DateRange(date_from=date_from, date_to=date_to)
 
         if form_types is not None:
@@ -74,8 +71,9 @@ class FilingQuery:
         return self._parse_submissions(submissions_dict)
 
 
-    def supports_ticker(self, ticker_symbol):
-        return self._key_mapper.has_cik(ticker_symbol)
+    @staticmethod
+    def supports_ticker(ticker_symbol):
+        return has_cik(ticker_symbol)
 
 
     @staticmethod

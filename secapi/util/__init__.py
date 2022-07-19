@@ -6,5 +6,5 @@ from .filetypes.file_types import (JSON_FILE,
                                    XML_FILE_REGEX,
                                    is_xml_file)
 
-from .keymapper.key_mapper import KeyMapper
 from .request.request import Request
+from .keymapper.key_mapper import get_cik, has_cik
