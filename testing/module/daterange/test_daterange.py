@@ -11,6 +11,7 @@ class Test(unittest.TestCase):
                 self.assertRaises(ValueError, self.create_date_range(date2, date1))
 
 
+
     @staticmethod
     def create_date_range(date_from, date_to):
         DateRange(date_from, date_to)

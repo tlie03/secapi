@@ -1,5 +1,7 @@
-from secapi.util import (DateRange, Request, JSON_FILE, get_cik, has_cik)
+from typing import List
 from warnings import warn
+
+from secapi.util import (DateRange, Request, JSON_FILE, get_cik, is_registered)
 
 FILING_INFORMATION_KEYS = ['accessionNumber',
                            'filingDate',
@@ -22,103 +24,75 @@ CIK_STRING = r'CIK'
 REQUIRED_CIK_LENGTH = 10
 
 
-class FilingQuery:
 
-    def __init__(self):
-        self._cik = None
-        self._ticker_symbol = None
-        self._filing_information = None
-        self._form_checker = None
-        self._date_range = None
-
-    def get_filings(self, ticker_symbol, date_from=None, date_to=None, form_types=None, filing_information=None):
-        # set parsing parameters
-        self._ticker_symbol = ticker_symbol
-        self._cik = get_cik(ticker_symbol)
-        self._date_range = DateRange(date_from=date_from, date_to=date_to)
-
-        if form_types is not None:
-            if type(form_types) is not list:
-                raise ValueError('form_types must be of type list of None')
-
-            for form_type in form_types:
-                if type(form_type) is not str:
-                    raise ValueError('form types must be of type str')
-
-        self._form_checker = self.create_form_checker(form_types)
-
-        if filing_information is None:
-            self._filing_information = FILING_INFORMATION_KEYS
-        else:
-            # this way the ordering of the keys is always the same so the query returns consistent and easy to read data
-            cache_list = []
-            for key in FILING_INFORMATION_KEYS:
-                if key in filing_information:
-                    filing_information.remove(key)
-                    cache_list.append(key)
-
-            if len(filing_information) > 0:
-                warn("filing_information list contains key that does not exist")
-            self._filing_information = cache_list
-
-        # get the main submissions file
-        length_diff = REQUIRED_CIK_LENGTH - len(self._cik)
-        cik = ('0' * length_diff) + self._cik
-        submissions_url = BASE_URL_SUBMISSIONS + CIK_STRING + cik + JSON_FILE
-
-        response = Request.sec_request(url=submissions_url)
-        submissions_dict = response.json()
-        return self._parse_submissions(submissions_dict)
+def supports_ticker(ticker_symbol):
+    return is_registered(ticker_symbol.upper())
 
 
-    @staticmethod
-    def supports_ticker(ticker_symbol):
-        return has_cik(ticker_symbol)
+def get_filings(ticker_symbol: str,
+                date_from: str = None,
+                date_to: str = None,
+                form_types: List[str] = None,
+                filing_information: List[str] = None) -> List[dict]:
+
+    search_daterange = DateRange(date_from=date_from, date_to=date_to)
+    checker = create_filing_checker(search_daterange, form_types)
+    if filing_information is None:
+        information_keys = FILING_INFORMATION_KEYS
+    else:
+        information_keys = [i for i in FILING_INFORMATION_KEYS if i in filing_information]
+        if len(information_keys) != len(filing_information):
+            warn("filing_information list contains key that does not exist")
+
+    # get the main submissions file
+    cik = get_cik(ticker_symbol.upper())
+    length_diff = REQUIRED_CIK_LENGTH - len(cik)
+    cik_formatted = ('0' * length_diff) + cik
+    submissions_url = BASE_URL_SUBMISSIONS + CIK_STRING + cik_formatted + JSON_FILE
+
+    response = Request.sec_request(url=submissions_url)
+    submissions_dict = response.json()
+
+    filings = []
+
+    # parse recent
+    data = submissions_dict['filings']['recent']
+    recent_daterange = DateRange(date_from=data['filingDate'][-1], date_to=data['filingDate'][0])
+
+    if search_daterange.intersect(recent_daterange):
+        filings += filter_filings(data, checker, information_keys, cik, ticker_symbol)
+
+    # parse files
+    files = submissions_dict['filings']['files']
+    for file in files:
+        filing_daterange = DateRange(date_from=file['filingFrom'], date_to=file['filingTo'])
+
+        if search_daterange.intersect(filing_daterange):
+            url = BASE_URL_SUBMISSIONS + file['name']
+            response = Request.sec_request(url=url)
+            data = response.json()
+            filings += filter_filings(data, checker, information_keys, cik, ticker_symbol)
+
+    return filings
 
 
-    @staticmethod
-    def create_form_checker(form_types):
-        if form_types is None:
-            return lambda form: True
-        else:
-            return lambda form: form in form_types
+def filter_filings(block_data, checker, information, cik, ticker_symbol):
+    filings = []
+
+    dates = block_data['filingDate']
+    forms = block_data['form']
+    for i, date, form in enumerate(zip(dates, forms)):
+
+        if checker(date, form):
+            filing = {'tickerSymbol': ticker_symbol, 'cik': cik}
+            for key in information:
+                filing[key] = block_data[key][i]
+            filings.append(filing)
+
+    return filings
 
 
-    def _parse_submissions(self, submissions_dict):
-        filings = []
-
-        # parse recent
-        data = submissions_dict['filings']['recent']
-        recent_date_range = DateRange(date_from=data['filingDate'][-1], date_to=data['filingDate'][0])
-
-        if self._date_range.intersect(recent_date_range):
-            filings += self._filter_filings(data)
-
-        # parse files
-        files = submissions_dict['filings']['files']
-        for file in files:
-            filing_date_range = DateRange(date_from=file['filingFrom'], date_to=file['filingTo'])
-
-            if self._date_range.intersect(filing_date_range):
-                url = BASE_URL_SUBMISSIONS + file['name']
-                response = Request.sec_request(url=url)
-                data = response.json()
-                filings += self._filter_filings(data)
-
-        return filings
-
-
-    def _filter_filings(self, block_data):
-        filings = []
-
-        dates = block_data['filingDate']
-        forms = block_data['form']
-        for i, date, form in enumerate(zip(dates, forms)):
-
-            if date in self._date_range and self._form_checker(form):
-                filing = {'tickerSymbol': self._ticker_symbol, 'cik': self._cik}
-                for key in self._filing_information:
-                    filing[key] = block_data[key][i]
-                filings.append(filing)
-
-        return filings
+def create_filing_checker(date_range, form_types):
+    def filing_checker(filing_date, form):
+        return filing_date in date_range and (form_types is None or form in form_types)
+    return filing_checker

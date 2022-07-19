@@ -7,4 +7,4 @@ from .filetypes.file_types import (JSON_FILE,
                                    is_xml_file)
 
 from .request.request import Request
-from .keymapper.key_mapper import get_cik, has_cik
+from .keymapper.key_mapper import get_cik, is_registered

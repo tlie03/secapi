@@ -16,7 +16,7 @@ def get_cik(ticker_symbol):
     raise ValueError(f'ticker symbol {ts} not found')
 
 
-def has_cik(ticker_symbol):
+def is_registered(ticker_symbol):
     ts = ticker_symbol.upper()
     response = Request.sec_request(SEC_CIK_TICKERS_DATA)
     data = response.json()

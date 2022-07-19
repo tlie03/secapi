@@ -1,1 +1,1 @@
-from .filing_query import FilingQuery
+from .filing_query import get_filings, supports_ticker
