@@ -1,10 +1,30 @@
+from __future__ import annotations
+
 from datetime import datetime
 
 
 DATE_FORMAT = '%Y-%m-%d'
 
 
-class Date:
+class DateBorder:
+
+    def __lt__(self, other: DateBorder):
+        pass
+
+    def __gt__(self, other: DateBorder):
+        pass
+
+    def __eq__(self, other: DateBorder):
+        pass
+
+    def __le__(self, other: DateBorder):
+        pass
+
+    def __ge__(self, other: DateBorder):
+        pass
+
+
+class Date(DateBorder):
 
     def __init__(self, date):
         self._date = datetime.strptime(date, DATE_FORMAT)
@@ -34,11 +54,11 @@ class Date:
     def __le__(self, other):
         return self < other or self == other
 
-    def __ge__(self, other):
+    def __ge__(self, other: DateBorder):
         return self > other or self == other
 
 
-class FromInfinity:
+class FromInfinity(DateBorder):
 
     def __lt__(self, other):
         return True
@@ -56,7 +76,7 @@ class FromInfinity:
         return self > other or self == other
 
 
-class ToInfinity:
+class ToInfinity(DateBorder):
 
     def __lt__(self, other):
         return False
