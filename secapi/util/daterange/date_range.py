@@ -30,5 +30,6 @@ class DateRange:
     def date_to(self):
         return self._date_to
 
-    def intersect(self, daterange):
+    def intersect(self, date_from, date_to):
+        daterange = DateRange(date_from=date_from, date_to=date_to)
         return not (self._date_to < daterange.date_from() or daterange.date_to() < self._date_from)

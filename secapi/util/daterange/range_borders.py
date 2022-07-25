@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
 DATE_FORMAT = '%Y-%m-%d'

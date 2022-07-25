@@ -57,17 +57,15 @@ def get_filings(ticker_symbol: str,
 
     # parse recent
     data = submissions_dict['filings']['recent']
-    recent_daterange = DateRange(date_from=data['filingDate'][-1], date_to=data['filingDate'][0])
 
-    if search_daterange.intersect(recent_daterange):
+    if search_daterange.intersect(date_from=data['filingDate'][-1], date_to=data['filingDate'][0]):
         filings += filter_filings(data, checker, information_keys, cik, ticker_symbol)
 
     # parse files
     files = submissions_dict['filings']['files']
     for file in files:
-        filing_daterange = DateRange(date_from=file['filingFrom'], date_to=file['filingTo'])
 
-        if search_daterange.intersect(filing_daterange):
+        if search_daterange.intersect(date_from=file['filingFrom'], date_to=file['filingTo']):
             url = BASE_URL_SUBMISSIONS + file['name']
             response = Request.sec_request(url=url)
             data = response.json()
