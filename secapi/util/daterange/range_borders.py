@@ -6,25 +6,30 @@ from datetime import datetime
 DATE_FORMAT = '%Y-%m-%d'
 
 
-class DateBorder:
+class RangeBorder:
+    """
+    An interface that defines the methods that must be
+    implemented by each concrete RangeBorder to make
+    the RangeBorders comparable to each other.
+    """
 
-    def __lt__(self, other: DateBorder):
+    def __lt__(self, other: RangeBorder):
         pass
 
-    def __gt__(self, other: DateBorder):
+    def __gt__(self, other: RangeBorder):
         pass
 
-    def __eq__(self, other: DateBorder):
+    def __eq__(self, other: RangeBorder):
         pass
 
-    def __le__(self, other: DateBorder):
+    def __le__(self, other: RangeBorder):
         pass
 
-    def __ge__(self, other: DateBorder):
+    def __ge__(self, other: RangeBorder):
         pass
 
 
-class Date(DateBorder):
+class Date(RangeBorder):
 
     def __init__(self, date):
         self._date = datetime.strptime(date, DATE_FORMAT)
@@ -54,11 +59,11 @@ class Date(DateBorder):
     def __le__(self, other):
         return self < other or self == other
 
-    def __ge__(self, other: DateBorder):
+    def __ge__(self, other: RangeBorder):
         return self > other or self == other
 
 
-class FromInfinity(DateBorder):
+class FromInfinity(RangeBorder):
 
     def __lt__(self, other):
         return True
@@ -76,7 +81,7 @@ class FromInfinity(DateBorder):
         return self > other or self == other
 
 
-class ToInfinity(DateBorder):
+class ToInfinity(RangeBorder):
 
     def __lt__(self, other):
         return False
