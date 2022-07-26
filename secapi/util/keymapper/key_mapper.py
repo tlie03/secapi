@@ -9,9 +9,9 @@ def get_cik(ticker_symbol):
     response = Request.sec_request(SEC_CIK_TICKERS_DATA)
     data = response.json()
 
-    for entry in data:
+    for entry in data.values():
         if entry['ticker'] == ticker:
-            return entry['cik_str']
+            return str(entry['cik_str'])
 
     raise ValueError(f'ticker symbol {ticker} not found')
 

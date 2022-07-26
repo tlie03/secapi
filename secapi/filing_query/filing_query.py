@@ -1,3 +1,11 @@
+"""
+This module implements the filing query which is one
+of the core features. The filing query parses the
+metadata of sec filings which than can be passed on
+into the filing parsers which parse the actual data
+from the filings.
+"""
+
 from typing import List
 from warnings import warn
 
@@ -25,7 +33,7 @@ REQUIRED_CIK_LENGTH = 10
 
 
 
-def supports_ticker(ticker_symbol):
+def supports_ticker(ticker_symbol: str) -> bool:
     return is_registered(ticker_symbol.upper())
 
 
@@ -41,8 +49,9 @@ def get_filings(ticker_symbol: str,
         information_keys = FILING_INFORMATION_KEYS
     else:
         information_keys = [i for i in FILING_INFORMATION_KEYS if i in filing_information]
-        if len(information_keys) != len(filing_information):
+        if len(information_keys) < len(filing_information):
             warn("filing_information list contains key that does not exist")
+
 
     # get the main submissions file
     cik = get_cik(ticker_symbol.upper())
@@ -51,6 +60,9 @@ def get_filings(ticker_symbol: str,
     submissions_url = BASE_URL_SUBMISSIONS + CIK_STRING + cik_formatted + JSON_FILE
 
     response = Request.sec_request(url=submissions_url)
+    if response.status_code != 200:
+        raise ConnectionError(f'invalid response status code, status code: {response.status_code}')
+
     submissions_dict = response.json()
 
     filings = []
@@ -79,7 +91,7 @@ def filter_filings(block_data, checker, information, cik, ticker_symbol):
 
     dates = block_data['filingDate']
     forms = block_data['form']
-    for i, date, form in enumerate(zip(dates, forms)):
+    for i, (date, form) in enumerate(zip(dates, forms)):
 
         if checker(date, form):
             filing = {'tickerSymbol': ticker_symbol, 'cik': cik}

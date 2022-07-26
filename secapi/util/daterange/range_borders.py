@@ -28,6 +28,9 @@ class RangeBorder:
     def __ge__(self, other: RangeBorder):
         pass
 
+    def __str__(self):
+        pass
+
 
 class Date(RangeBorder):
 
@@ -62,6 +65,9 @@ class Date(RangeBorder):
     def __ge__(self, other: RangeBorder):
         return self > other or self == other
 
+    def __str__(self):
+        return self._date.strftime(DATE_FORMAT)
+
 
 class FromInfinity(RangeBorder):
 
@@ -80,6 +86,9 @@ class FromInfinity(RangeBorder):
     def __ge__(self, other):
         return self > other or self == other
 
+    def __str__(self):
+        return 'None'
+
 
 class ToInfinity(RangeBorder):
 
@@ -97,3 +106,6 @@ class ToInfinity(RangeBorder):
 
     def __ge__(self, other):
         return self > other or self == other
+
+    def __str__(self):
+        return 'None'

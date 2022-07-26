@@ -1,19 +1,23 @@
-import os
-import random
-
+import requests
 import pandas as pd
-from datetime import datetime, timedelta
+import os
 
-cwd = os.getcwd()
+SEC_CIK_TICKERS_DATA = r"https://www.sec.gov/files/company_tickers.json"
 
-date = datetime.strptime("1980-01-01", '%Y-%m-%d')
-data = []
-for i in range(1000):
-    data.append(date.strftime('%Y-%m-%d'))
-    delta = random.randint(1, 43)
-    date += timedelta(delta)
+data = requests.get(SEC_CIK_TICKERS_DATA).json()
 
-print(data)
-df = pd.DataFrame.from_dict({"dates": data})
-print(df)
-df.to_csv(cwd + "/valid_dates_sorted.csv")
+
+cik = []
+ticker = []
+title = []
+
+
+for d in data.values():
+    cik.append(d['cik_str'])
+    ticker.append(d['ticker'])
+    title.append(d['title'])
+
+data_dict = {"cik": cik, "ticker": ticker, "title": title}
+
+df = pd.DataFrame.from_dict(data_dict)
+df.to_csv(os.getcwd() + "registered_companies.csv")
