@@ -10,10 +10,10 @@ class DateRange:
 
     The implementation does not support any kind of daytime measurement.
 
-    The format of the dates given as inputs is '%Y-%m-%d'.
+    The dates given as inputs must match the '%Y-%m-%d' format.
     """
 
-    def __init__(self, date_from: str, date_to: str):
+    def __init__(self, date_from: str or None, date_to: str or None):
         """
         None values represent an open border.
         """
@@ -37,9 +37,10 @@ class DateRange:
         date = Date(item)
         return self._date_from <= date <= self._date_to
 
-    def intersect(self, date_from: str, date_to: str) -> bool:
+    def intersect(self, date_from: str or None, date_to: str or None) -> bool:
         """
         returns true if at least one date is contained in both ranges.
         """
         daterange = DateRange(date_from=date_from, date_to=date_to)
         return not (self._date_to < daterange._date_from or daterange._date_to < self._date_from)
+    

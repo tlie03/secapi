@@ -1,3 +1,14 @@
+"""
+This module provides the sec_request function which must be used
+for all requests to the  sec.gov domain in this project to ensure
+that the amount of requests stays in the boundaries set by the sec.
+
+The method was implemented as a static method of a class because
+an implementation as a normal function caused some issues
+by exceeding the request limits. These issues disappeared
+with the implementation as a static method.
+"""
+
 import requests
 from ratelimit import limits, sleep_and_retry
 

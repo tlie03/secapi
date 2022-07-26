@@ -1,6 +1,6 @@
 from secapi.util import Request
 
-
+# a file maintained by the sec that holds all ticker symbols and the corresponding cik
 SEC_CIK_TICKERS_DATA = r"https://www.sec.gov/files/company_tickers.json"
 
 
