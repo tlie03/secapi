@@ -1,11 +1,3 @@
-"""
-This module implements the filing query which is one
-of the core features. The filing query parses the
-metadata of sec filings which than can be passed on
-into the filing parsers which parse the actual data
-from the filings.
-"""
-
 from typing import List
 from warnings import warn
 
@@ -98,7 +90,6 @@ def filter_filings(block_data, checker, information, cik, ticker_symbol):
             for key in information:
                 filing[key] = block_data[key][i]
             filings.append(filing)
-
     return filings
 
 
