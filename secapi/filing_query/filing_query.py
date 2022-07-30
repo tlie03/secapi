@@ -3,6 +3,7 @@ from warnings import warn
 
 from secapi.util import (DateRange, Request, JSON_FILE, get_cik)
 
+# list with all keys of a filings metadata
 FILING_INFORMATION_KEYS = ['accessionNumber',
                            'filingDate',
                            'reportDate',
@@ -30,6 +31,23 @@ def get_filings(ticker_symbol: str,
                 form_types: List[str] = None,
                 filing_information: List[str] = None) -> List[dict]:
 
+    """
+    Returns a list of metadata of the filings that match the following search parameters.
+
+    :param ticker_symbol: ticker_symbol of the company that the filings belong to (upper or lower case)
+    :param date_from: start of the date range in which the filings have been filed
+    (None value represents an open border)
+    :param date_to: end of the date range in which the filings have been filed
+    (None value represents an open border)
+    :param form_types: the form type the filings must have
+    (if None the form type is ignored)
+    :param filing_information: the metadata that should be queried for all the filings
+    (if None all the metadata will be queried)
+    :return: A list of dictionaries where each dictionary represents one filing.
+    The keys of the dictionaries are the filing_information given as an argument and
+    the ticker symbol and cik number of the company (keys: tickerSymbol, cik)
+    """
+
     search_daterange = DateRange(date_from=date_from, date_to=date_to)
     checker = create_filing_checker(search_daterange, form_types)
     if filing_information is None:
@@ -38,7 +56,6 @@ def get_filings(ticker_symbol: str,
         information_keys = [i for i in FILING_INFORMATION_KEYS if i in filing_information]
         if len(information_keys) < len(filing_information):
             warn("filing_information list contains key that does not exist")
-
 
     # get the main submissions file
     cik = get_cik(ticker_symbol.upper())
@@ -54,14 +71,12 @@ def get_filings(ticker_symbol: str,
     filings = []
     # parse recent
     data = submissions_dict['filings']['recent']
-
     if search_daterange.intersect(date_from=data['filingDate'][-1], date_to=data['filingDate'][0]):
         filings += filter_filings(data, checker, information_keys, cik, ticker_symbol)
 
     # parse files
     files = submissions_dict['filings']['files']
     for file in files:
-
         if search_daterange.intersect(date_from=file['filingFrom'], date_to=file['filingTo']):
             url = BASE_URL_SUBMISSIONS + file['name']
             response = Request.sec_request(url=url)

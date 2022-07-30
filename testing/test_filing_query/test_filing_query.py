@@ -32,8 +32,8 @@ class FilingQueryTests(unittest.TestCase):
             date_to = random.choice(valid_dates_sorted[index:])
 
             ticker = random.choice(ticker_symbols)
-
             filings = secapi.get_filings(ticker, date_from, date_to, filing_information=keys)
+
             keys = keys + ["tickerSymbol", 'cik']
             keys.sort()
             for filing in filings:
