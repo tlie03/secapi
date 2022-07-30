@@ -1,6 +1,6 @@
 import time
 from threading import Thread, Lock
-from secapi.util import Request
+from secapi import Request
 from testing.helper import timer
 
 

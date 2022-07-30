@@ -1,7 +1,7 @@
 from typing import List
 from warnings import warn
 
-from secapi.util import (DateRange, Request, JSON_FILE, get_cik, is_registered)
+from secapi.util import (DateRange, Request, JSON_FILE, get_cik)
 
 FILING_INFORMATION_KEYS = ['accessionNumber',
                            'filingDate',
@@ -22,11 +22,6 @@ BASE_URL_SUBMISSIONS = r'https://data.sec.gov/submissions/'
 
 CIK_STRING = r'CIK'
 REQUIRED_CIK_LENGTH = 10
-
-
-
-def supports_ticker(ticker_symbol: str) -> bool:
-    return is_registered(ticker_symbol.upper())
 
 
 def get_filings(ticker_symbol: str,
@@ -54,11 +49,9 @@ def get_filings(ticker_symbol: str,
     response = Request.sec_request(url=submissions_url)
     if response.status_code != 200:
         raise ConnectionError(f'invalid response status code, status code: {response.status_code}')
-
     submissions_dict = response.json()
 
     filings = []
-
     # parse recent
     data = submissions_dict['filings']['recent']
 
