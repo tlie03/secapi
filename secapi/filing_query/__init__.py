@@ -1,1 +1,0 @@
-from .filing_query import get_filings

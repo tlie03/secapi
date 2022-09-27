@@ -1,7 +1,8 @@
 from typing import List
 from warnings import warn
-
-from secapi.util import (DateRange, Request, JSON_FILE, get_cik)
+from openDateRange import DateRange
+from src.secapi.request import Request
+from src.secapi.key_mapper import get_cik
 
 # list with all keys of a filings metadata
 FILING_INFORMATION_KEYS = ['accessionNumber',
@@ -18,6 +19,8 @@ FILING_INFORMATION_KEYS = ['accessionNumber',
                            'isInlineXBRL',
                            'primaryDocument',
                            'primaryDocDescription']
+
+JSON_FILE = ".json"
 
 BASE_URL_SUBMISSIONS = r'https://data.sec.gov/submissions/'
 
@@ -64,20 +67,18 @@ def get_filings(ticker_symbol: str,
     submissions_url = BASE_URL_SUBMISSIONS + CIK_STRING + cik_formatted + JSON_FILE
 
     response = Request.sec_request(url=submissions_url)
-    if response.status_code != 200:
-        raise ConnectionError(f'invalid response status code, status code: {response.status_code}')
     submissions_dict = response.json()
 
     filings = []
     # parse recent
     data = submissions_dict['filings']['recent']
-    if search_daterange.intersect(date_from=data['filingDate'][-1], date_to=data['filingDate'][0]):
+    if search_daterange.intersects(date_from=data['filingDate'][-1], date_to=data['filingDate'][0]):
         filings += filter_filings(data, checker, information_keys, cik, ticker_symbol)
 
     # parse files
     files = submissions_dict['filings']['files']
     for file in files:
-        if search_daterange.intersect(date_from=file['filingFrom'], date_to=file['filingTo']):
+        if search_daterange.intersects(date_from=file['filingFrom'], date_to=file['filingTo']):
             url = BASE_URL_SUBMISSIONS + file['name']
             response = Request.sec_request(url=url)
             data = response.json()
