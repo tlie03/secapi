@@ -29,7 +29,6 @@ class Request:
 
         if response.status_code != 200 and retries > 0:
             response = Request.sec_request(url=url, header=header, retries=retries-1)
-
-        if response.status_code != 200:
-            raise ConnectionError(f'invalid response status code, status code: {response.status_code}')
+            if response.status_code != 200:
+                raise ConnectionError(f'invalid response status code, status code: {response.status_code}')
         return response

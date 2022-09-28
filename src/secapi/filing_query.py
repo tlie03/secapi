@@ -4,7 +4,7 @@ from openDateRange import DateRange
 from src.secapi.request import Request
 from src.secapi.key_mapper import get_cik
 
-# list with all keys of a filings metadata
+# list of keys for all existing metadata points
 FILING_INFORMATION_KEYS = ['accessionNumber',
                            'filingDate',
                            'reportDate',
@@ -21,7 +21,6 @@ FILING_INFORMATION_KEYS = ['accessionNumber',
                            'primaryDocDescription']
 
 JSON_FILE = ".json"
-
 BASE_URL_SUBMISSIONS = r'https://data.sec.gov/submissions/'
 
 CIK_STRING = r'CIK'
@@ -33,22 +32,13 @@ def get_filings(ticker_symbol: str,
                 date_to: str = None,
                 form_types: List[str] = None,
                 filing_information: List[str] = None) -> List[dict]:
-
     """
-    Returns a list of metadata of the filings that match the following search parameters.
-
-    :param ticker_symbol: ticker_symbol of the company that the filings belong to (upper or lower case)
-    :param date_from: start of the date range in which the filings have been filed
-    (None value represents an open border)
-    :param date_to: end of the date range in which the filings have been filed
-    (None value represents an open border)
-    :param form_types: the form type the filings must have
-    (if None the form type is ignored)
-    :param filing_information: the metadata that should be queried for all the filings
-    (if None all the metadata will be queried)
-    :return: A list of dictionaries where each dictionary represents one filing.
-    The keys of the dictionaries are the filing_information given as an argument and
-    the ticker symbol and cik number of the company (keys: tickerSymbol, cik)
+    This method returns the metadata for all filings of the given form types that belong to the company
+    with the given ticker and have been filed within the given daterange.
+    The returned metadata only contains the datapoints given in the filing_information parameter.
+    The ticker symbol is the only information that must be given.
+    If the form_type parameter is set to None all form types will be returned.
+    If the filing_information parameter is set to None all metadata points will be returned.
     """
 
     search_daterange = DateRange(date_from=date_from, date_to=date_to)
@@ -57,11 +47,12 @@ def get_filings(ticker_symbol: str,
         information_keys = FILING_INFORMATION_KEYS
     else:
         information_keys = [i for i in FILING_INFORMATION_KEYS if i in filing_information]
+        # proofs if the filing_information parameter contains metadata points that do not exist
         if len(information_keys) < len(filing_information):
             warn("filing_information list contains key that does not exist")
 
     # get the main submissions file
-    cik = get_cik(ticker_symbol.upper())
+    cik = get_cik(ticker_symbol)
     length_diff = REQUIRED_CIK_LENGTH - len(cik)
     cik_formatted = ('0' * length_diff) + cik
     submissions_url = BASE_URL_SUBMISSIONS + CIK_STRING + cik_formatted + JSON_FILE
