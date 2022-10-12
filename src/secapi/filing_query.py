@@ -78,17 +78,16 @@ def get_filings(ticker_symbol: str,
     return filings
 
 
-def filter_filings(block_data, checker, information, cik, ticker_symbol):
+def filter_filings(raw_filings, checker, required_information, cik, ticker_symbol):
     filings = []
 
-    dates = block_data['filingDate']
-    forms = block_data['form']
+    dates = raw_filings['filingDate']
+    forms = raw_filings['form']
     for i, (date, form) in enumerate(zip(dates, forms)):
-
         if checker(date, form):
             filing = {'tickerSymbol': ticker_symbol, 'cik': cik}
-            for key in information:
-                filing[key] = block_data[key][i]
+            for key in required_information:
+                filing[key] = raw_filings[key][i]
             filings.append(filing)
     return filings
 
