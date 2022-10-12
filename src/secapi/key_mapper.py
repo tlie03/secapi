@@ -4,8 +4,8 @@ from src.secapi.request import Request
 SEC_CIK_TICKERS_DATA = r"https://www.sec.gov/files/company_tickers.json"
 
 
-def get_cik(ticker_symbol):
-    # gets the cik that belongs to the company with the given ticker symbol
+def get_cik(ticker_symbol: str) -> str:
+    # returns the cik that belongs to the company with the given ticker symbol
     ticker = ticker_symbol.upper()
     response = Request.sec_request(SEC_CIK_TICKERS_DATA)
     data = response.json()
@@ -16,13 +16,13 @@ def get_cik(ticker_symbol):
     raise ValueError(f'ticker symbol {ticker} not found')
 
 
-def is_registered(ticker_symbol):
-    # proofs whether the company with the given ticker symbol is registered at the sec
+def is_registered(ticker_symbol: str) -> bool:
+    # proofs whether the company with the given ticker symbol is registered at the sec or not
     ticker = ticker_symbol.upper()
     response = Request.sec_request(SEC_CIK_TICKERS_DATA)
     data = response.json()
 
-    for entry in data:
+    for entry in data.values():
         if entry['ticker'] == ticker:
             return True
     else:

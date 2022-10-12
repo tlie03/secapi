@@ -22,7 +22,7 @@ class Request:
     @staticmethod
     @sleep_and_retry
     @limits(calls=SEC_REQUEST_COUNT, period=SEC_PERIOD)
-    def sec_request(url, header=None, retries=5):
+    def sec_request(url: str, header: dict = None, retries: int = 5):
         if header is None:
             header = SEC_HEADER
         response = requests.get(url=url, headers=header)
