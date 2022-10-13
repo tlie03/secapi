@@ -52,8 +52,7 @@ Below is a list of all possible metadata points:
 
 These metadata can be used to create the links to the actual filings.
 The process of finding a way to build the links from the metadata can be quite difficult, 
-and requires a lot of experimentation and hacking. An example on how to
-do this for the form4 filings can be found [below](#description-of-how-to-build-links-to-form4-filings)
+and requires a lot of experimentation and hacking.
 
 ### How to make requests to the sec server
 The sec has restricted the access to their servers thereby it is not allowed
@@ -77,5 +76,3 @@ The `Request.sec_request` function takes in three parameters which are:
 ### Utility functions
 * `get_cik` can be used to get the cik that belongs to a ticker symbol
 * `is_registered` can be used to proof if a company is sec registered
-
-## Description of how to build links to form4 filings
