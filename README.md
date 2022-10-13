@@ -1,4 +1,4 @@
-# secapi
+# SECapi
 This module provides an API that can be used to query metadata from sec
 filings. These metadata can then be used to create a link to the actual filings
 which can then be parsed.
