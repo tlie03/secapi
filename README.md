@@ -8,7 +8,7 @@ The module was developed with python 2.7.18 and only uses build-in python packag
 as the packages typing, requests, ratelimiter and [OpenDateRange](https://github.com/tlie03/OpenDateRange).
 
 ## Installation
-``$ pip install secAPI``
+``$ pip install SECapi``
 
 ## What functionalities does the API provide?
 ### Query filing metadata
