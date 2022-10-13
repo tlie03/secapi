@@ -1,5 +1,5 @@
 import unittest
-from src.secapi.key_mapper import get_cik, is_registered
+from src.secAPI.key_mapper import get_cik, is_registered
 
 
 class TestCase(unittest.TestCase):
