@@ -18,4 +18,4 @@ dependencies = ["typing",
     "python >= 2.7.18"]
 
 [project.urls]
-Homepage = "https://github.com/tlie03/secapi"
+Homepage = "https://github.com/tlie03/SECapi"
