@@ -76,3 +76,5 @@ The `Request.sec_request` function takes in three parameters which are:
 ### Utility functions
 * `get_cik` can be used to get the cik that belongs to a ticker symbol
 * `is_registered` can be used to proof if a company is registered at the sec
+
+Both functions take the ticker symbol of the company as an argument
