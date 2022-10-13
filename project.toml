@@ -11,5 +11,11 @@ readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=2.7.18"
 
+dependencies = ["typing",
+    "ratelimiter",
+    "requests",
+    "openDateRange",
+    "python >= 2.7.18"]
+
 [project.urls]
 Homepage = "https://github.com/tlie03/secapi"
