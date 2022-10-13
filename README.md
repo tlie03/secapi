@@ -8,10 +8,10 @@ The module was developed with python 2.7.18 and only uses build-in python packag
 as the packages typing, requests, ratelimiter and [OpenDateRange](https://github.com/tlie03/OpenDateRange).
 
 ## Installation
-``$ pip install secapi``
+``$ pip install secAPI``
 
 ## What functionalities does the API provide?
-### query filing metadata
+### Query filing metadata
 The most important function ist the `get_filings` function
 which takes one required and four optional search parameters.
 The required parameter is the ticker symbol of the company 
@@ -55,9 +55,27 @@ The process of finding a way to build the links from the metadata can be quite d
 and requires a lot of experimentation and hacking. An example on how to
 do this for the form4 filings can be found [below](#description-of-how-to-build-links-to-form4-filings)
 
-### how to make requests to the sec server
-The sec has restricted the access rate to their servers thereby it is not allowed
-to do more than 10 requests per second. 
+### How to make requests to the sec server
+The sec has restricted the access to their servers thereby it is not allowed
+to do more than 10 requests per second. To ensure that the amount of requests stays
+within the boundaries set by the sec this package provides the `Request.sec_request`
+function which can be used to do requests to the sec servers. The
+function has a ratelimiter which ensures that the function can only be executed
+10 times per second. Due to the sleep and retry property of the function
+the user does not have to worry about the number of function calls he makes.
+Furthermore, all code segments in this package that make requests
+the sec servers use the same function as well. Thereby the request limit
+can not be exceeded when alle requests are made with the `Request.sec_request`
+function. Because of that it is very important that a user of this API uses
+this function for all requests to the sec servers otherwise problems can occur.
 
+The `Request.sec_request` function takes in three parameters which are:
+* url : the url that will be requested
+* header : the header of the request which by default only contains a User-Agent
+* retries : the number of retries which is 5 by default
+
+### Utility functions
+* `get_cik` can be used to get the cik that belongs to a ticker symbol
+* `is_registered` can be used to proof if a company is sec registered
 
 ## Description of how to build links to form4 filings
