@@ -85,7 +85,7 @@ def filter_filings(raw_filings, checker, required_information, cik, ticker_symbo
     forms = raw_filings['form']
     for i, (date, form) in enumerate(zip(dates, forms)):
         if checker(date, form):
-            filing = {'tickerSymbol': ticker_symbol, 'cik': cik}
+            filing = {'tickerSymbol': ticker_symbol.upper(), 'cik': cik}
             for key in required_information:
                 filing[key] = raw_filings[key][i]
             filings.append(filing)
