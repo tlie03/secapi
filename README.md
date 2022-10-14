@@ -1,4 +1,4 @@
-# sec-py
+# secapi
 This module provides an API that can be used to query metadata from sec
 filings. These metadata can then be used to create a link to the actual filings
 which can then be parsed.
@@ -8,7 +8,7 @@ The module was developed with python 2.7.18 and only uses build-in python packag
 as the packages typing, requests, ratelimiter and [OpenDateRange](https://github.com/tlie03/OpenDateRange).
 
 ## Installation
-``$ pip install sec-py``
+``$ pip install secapi-tl``
 
 ## What functionalities does the API provide?
 ### Query filing metadata
