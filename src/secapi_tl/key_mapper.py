@@ -1,4 +1,4 @@
-from src.sec_py.request import Request
+from src.secapi_tl.request import Request
 
 # a file maintained by the sec that holds all ticker symbols and their corresponding cik
 SEC_CIK_TICKERS_DATA = r"https://www.sec.gov/files/company_tickers.json"

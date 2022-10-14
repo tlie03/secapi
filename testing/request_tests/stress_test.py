@@ -1,4 +1,4 @@
-from src.sec_py.request import Request
+from src.secapi_tl.request import Request
 from threading import Thread, Lock
 from testing.helper.timer import timer
 import time
