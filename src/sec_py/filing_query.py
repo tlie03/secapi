@@ -1,8 +1,8 @@
 from typing import List
 from warnings import warn
 from openDateRange import DateRange
-from src.SECapi.request import Request
-from src.SECapi.key_mapper import get_cik
+from src.sec_py.request import Request
+from src.sec_py.key_mapper import get_cik
 
 # list of keys for all existing metadata points
 FILING_INFORMATION_KEYS = ['accessionNumber',
