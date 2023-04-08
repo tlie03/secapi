@@ -1,5 +1,6 @@
 from __future__ import annotations
 from datetime import datetime
+from datetime import date
 
 
 class Filing:
@@ -10,8 +11,10 @@ class Filing:
 
     def __init__(self,
                  accession_number: str = None,
-                 filing_date: datetime.date = None,
-                 report_date: datetime.date = None,
+                 ticker_symbol: str = None,
+                 cik: str = None,
+                 filing_date: date = None,
+                 report_date: date = None,
                  acceptance_date_time: datetime = None,
                  act: str = None,
                  form: str = None,
@@ -40,8 +43,10 @@ class Filing:
         :param primary_doc_description: the primary document description of the filing
         """
         self._accession_number: str = accession_number
-        self._filing_date: datetime.date = filing_date
-        self._report_date: datetime.date = report_date
+        self._ticker_symbol: str = ticker_symbol
+        self._cik: str = cik
+        self._filing_date: date = filing_date
+        self._report_date: date = report_date
         self._acceptance_date_time: datetime = acceptance_date_time
         self._act: str = act
         self._form: str = form
@@ -55,44 +60,38 @@ class Filing:
         self._primary_doc_description: str = primary_doc_description
 
     @staticmethod
-    def from_dict(accession_number: str = None,
-                  filing_date: str = None,
-                  report_date: str = None,
-                  acceptance_date_time: str = None,
-                  act: str = None,
-                  form: str = None,
-                  file_number: str = None,
-                  film_number: str = None,
-                  items: str = None,
-                  size: int = None,
-                  is_xbrl: str = None,
-                  is_inline_xbrl: str = None,
-                  primary_document: str = None,
-                  primary_doc_description: str = None,
-                  ) -> Filing:
+    def from_dict(filing_dict: dict) -> Filing:
         """
         Creates a filing object from the json that is returned by the web request to the sec server.
         The values are converted to appropriate python types.
         """
-        accession_number: str = accession_number
-        filing_date: datetime.date = datetime.strptime(filing_date, '%Y-%m-%d').date()
-        report_date: datetime.date = datetime.strptime(report_date, '%Y-%m-%d').date()
-        datetime_str = acceptance_date_time
+        accession_number: str = filing_dict.get('accessionNumber')
+        filing_date: date = datetime.strptime(filing_dict.get("filingDate"), '%Y-%m-%d').date()
+        report_date: date = datetime.strptime(filing_dict.get("reportDate"), '%Y-%m-%d').date()
+        ticker_symbol: str = filing_dict.get('tickerSymbol')
+        cik: str = filing_dict.get('cik')
+
+        datetime_str = filing_dict.get("acceptanceDateTime")
         datetime_str = datetime_str.replace("T", " ")
         datetime_str = datetime_str.replace(".000Z", "")
         acceptance_date_time: datetime = datetime.strptime(datetime_str, "%Y-%m-%d %H:%M:%S")
-        act: str = act
-        form: str = form
-        file_number: str = file_number
-        film_number: str = film_number
-        items: str = items
-        size: int = size
-        is_xbrl: bool = bool(is_xbrl)
-        is_inline_xbrl: bool = bool(is_inline_xbrl)
-        primary_document: str = primary_document
-        primary_doc_description: str = primary_doc_description
+
+        act: str = filing_dict.get('act')
+        form: str = filing_dict.get('form')
+        file_number: str = filing_dict.get('fileNumber')
+        film_number: str = filing_dict.get('filmNumber')
+        items: str = filing_dict.get('items')
+        size: int = filing_dict.get('size')
+
+        is_xbrl: bool = bool(filing_dict.get('isXBRL'))
+        is_inline_xbrl: bool = bool(filing_dict.get('isInlineXBRL'))
+
+        primary_document: str = filing_dict.get('primaryDocument')
+        primary_doc_description: str = filing_dict.get('primaryDocDescription')
 
         return Filing(accession_number=accession_number,
+                      ticker_symbol=ticker_symbol,
+                      cik=cik,
                       filing_date=filing_date,
                       report_date=report_date,
                       acceptance_date_time=acceptance_date_time,
@@ -106,3 +105,67 @@ class Filing:
                       is_inline_xbrl=is_inline_xbrl,
                       primary_document=primary_document,
                       primary_doc_description=primary_doc_description)
+
+    @property
+    def accession_number(self) -> str:
+        return self._accession_number
+
+    @property
+    def ticker_symbol(self) -> str:
+        return self._ticker_symbol
+
+    @property
+    def cik(self) -> str:
+        return self._cik
+
+    @property
+    def filing_date(self) -> date:
+        return self._filing_date
+
+    @property
+    def report_date(self) -> date:
+        return self._report_date
+
+    @property
+    def acceptance_date_time(self) -> datetime:
+        return self._acceptance_date_time
+
+    @property
+    def act(self) -> str:
+        return self._act
+
+    @property
+    def form(self) -> str:
+        return self._form
+
+    @property
+    def file_number(self) -> str:
+        return self._file_number
+
+    @property
+    def film_number(self) -> str:
+        return self._film_number
+
+    @property
+    def items(self) -> str:
+        return self._items
+
+    @property
+    def size(self) -> int:
+        return self._size
+
+    @property
+    def is_xbrl(self) -> bool:
+        return self._is_xbrl
+
+    @property
+    def is_inline_xbrl(self) -> bool:
+        return self._is_inline_xbrl
+
+    @property
+    def primary_document(self) -> str:
+        return self._primary_document
+
+    @property
+    def primary_doc_description(self) -> str:
+        return self._primary_doc_description

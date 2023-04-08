@@ -1,8 +1,10 @@
 from typing import List
 from warnings import warn
 from openDateRange import DateRange
+
 from .request import Request
 from .key_mapper import get_cik
+from .filing import Filing
 
 # list of keys for all existing metadata points
 FILING_INFORMATION_KEYS = ['accessionNumber',
@@ -31,7 +33,7 @@ def get_filings(ticker_symbol: str,
                 date_from: str = None,
                 date_to: str = None,
                 form_types: List[str] = None,
-                filing_information: List[str] = None) -> List[dict]:
+                filing_information: List[str] = None) -> List[Filing]:
     """
     This method returns the metadata for all filings of the given form types that belong to the company
     with the given ticker and have been filed within the given daterange.
@@ -75,7 +77,7 @@ def get_filings(ticker_symbol: str,
             data = response.json()
             filings += filter_filings(data, checker, information_keys, cik, ticker_symbol)
 
-    return filings
+    return [Filing.from_dict(filing_dict=filing) for filing in filings]
 
 
 def filter_filings(raw_filings, checker, required_information, cik, ticker_symbol):
