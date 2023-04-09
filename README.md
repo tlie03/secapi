@@ -29,11 +29,12 @@ are included in the given list. This can be used to reduce the amount of data
 and to get rid of irrelevant data.
 A list of all possible data points can be found below
 
-The return value will be a list of dictionaries. Each dictionary represents
-one filing and holds multiple metadata points. Two of these metadata points
-are the ticker symbol and the cik which are always part of the metadata.
-By default, all other metadata points are contained in the dictionary, but
-they can also be specifically selected via the filing_information parameter.
+The return value will be a list of Filing Objects. Each Filing holds multiple 
+metadata points. Two of these metadata points are the ticker symbol 
+and the cik which are always part of the metadata.
+By default, all other metadata points are contained in the Filing, but
+they can also be specifically selected via the filing_information parameter
+of the get_filings function.
 Below is a list of all possible metadata points:
 * accessionNumber
 * filingDate
@@ -50,7 +51,7 @@ Below is a list of all possible metadata points:
 * primaryDocument
 * primaryDocDescription
 
-These metadata can be used to create the links to the actual filings.
+These metadata can then be used to create the links to the actual filings.
 The process of finding a way to build the links from the metadata can be quite difficult, 
 and requires a lot of experimentation.
 
