@@ -13,7 +13,8 @@ import requests
 from ratelimit import limits, sleep_and_retry
 
 SEC_REQUEST_COUNT = 1
-SEC_PERIOD = 0.1
+# period is slightly smaller than one because it did not work with an exact value of 1
+SEC_PERIOD = 0.99
 SEC_HEADER = {'User-Agent': "myUserAgent"}
 
 
