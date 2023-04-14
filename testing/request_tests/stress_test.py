@@ -5,7 +5,7 @@ import time
 
 example_url = "https://www.sec.gov/Archives/edgar/data/104169/000112760222022911/xslF345X03/form4.xml"
 
-REQUEST_COUNT = request_count = 1000
+REQUEST_COUNT = request_count = 300
 THREAD_COUNT = 10
 
 lock = Lock()
@@ -27,20 +27,21 @@ def thread_function():
             raise Exception("invalid response status code")
 
 
-threads = []
-for i in range(THREAD_COUNT):
-    threads.append(Thread(target=thread_function))
+if __name__ == "__main__":
+    threads = []
+    for i in range(THREAD_COUNT):
+        threads.append(Thread(target=thread_function))
 
-start_time = time.time()
+    start_time = time.time()
 
-for thread in threads:
-    thread.start()
+    for thread in threads:
+        thread.start()
 
-for thread in threads:
-    thread.join()
+    for thread in threads:
+        thread.join()
 
-end_time = time.time()
+    end_time = time.time()
 
-print(f"total time: {end_time - start_time}")
-print(f"number of requests: {REQUEST_COUNT}")
-print(f"requests per secound: {REQUEST_COUNT / (end_time - start_time)}")
+    print(f"total time: {end_time - start_time}")
+    print(f"number of requests: {REQUEST_COUNT}")
+    print(f"requests per secound: {REQUEST_COUNT / (end_time - start_time)}")
