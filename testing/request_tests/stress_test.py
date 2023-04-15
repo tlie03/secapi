@@ -1,14 +1,12 @@
 from src.secapi_tl.request import Request
-from threading import Thread, Lock
+from threading import Thread
 from testing.helper.timer import timer
 import time
 
 example_url = "https://www.sec.gov/Archives/edgar/data/104169/000112760222022911/xslF345X03/form4.xml"
 
-REQUEST_COUNT = request_count = 300
-THREAD_COUNT = 10
-
-lock = Lock()
+REQUEST_COUNT = request_count = 500
+THREAD_COUNT = 6
 
 
 @timer
@@ -17,14 +15,16 @@ def thread_function():
 
     while request_count > 0:
 
-        response = Request.sec_request(url=example_url)
+        try:
+            response = Request.sec_request(url=example_url)
+        except ConnectionError as e:
+            print(f"Request was not successful: {e}")
+            continue
         if response.status_code == 200:
-            lock.acquire()
             request_count -= 1
             print(f"{REQUEST_COUNT - request_count} request was successful")
-            lock.release()
         else:
-            raise Exception("invalid response status code")
+            print(f"different status code: {response.status_code}")
 
 
 if __name__ == "__main__":

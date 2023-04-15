@@ -8,13 +8,13 @@ an implementation as a normal function caused some issues
 by exceeding the request limits when used with threading.
 These issues disappeared with the implementation as a static method.
 """
-
+import time
+import math
 import requests
 from ratelimit import limits, sleep_and_retry
 
 SEC_REQUEST_COUNT = 1
-# period is slightly smaller than one because it did not work with an exact value of 1
-SEC_PERIOD = 0.99
+SEC_PERIOD = 0.1
 SEC_HEADER = {'User-Agent': "myUserAgent"}
 
 
@@ -23,10 +23,15 @@ class Request:
     @staticmethod
     @sleep_and_retry
     @limits(calls=SEC_REQUEST_COUNT, period=SEC_PERIOD)
-    def sec_request(url: str, header: dict = None):
+    def sec_request(url: str, header: dict = None, retries: int=5):
         if header is None:
             header = SEC_HEADER
         response = requests.get(url=url, headers=header)
-        if response.status_code != 200:
-            raise ConnectionError(f'invalid response status code, status code: {response.status_code}')
+        if response.status_code != 200 and retries > 0:
+            time.sleep(20 * (1 / math.exp(retries-1)))
+            response = Request.sec_request(url=url, header=header, retries=retries-1)
+
+        # raise Connection error on deepest function call if there was no successful response for all tries
+        if response.status_code != 200 and retries == 0:
+            raise ConnectionError(f"invalid response statuscode: {response.status_code}")
         return response
