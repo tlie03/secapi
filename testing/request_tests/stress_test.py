@@ -1,12 +1,25 @@
-from src.secapi_tl.request import Request
+from src.secapi_tl.filing_query import get_filings, Request
 from threading import Thread
 from testing.helper.timer import timer
 import time
-
-example_url = "https://www.sec.gov/Archives/edgar/data/104169/000112760222022911/xslF345X03/form4.xml"
+from random import choice
 
 REQUEST_COUNT = request_count = 500
 THREAD_COUNT = 6
+FORM_TYPES = ["3", "4", "5", "3/A", "4/A", "5/A"]
+URLS = [
+    "https://www.sec.gov/Archives/edgar/data/1018724/000112760223012687/xslF345X04/form4.xml",
+    "https://www.sec.gov/Archives/edgar/data/1018724/000112760223012687/xslF345X04/form4.xml",
+    "https://www.sec.gov/Archives/edgar/data/1018724/000112760223012687/xslF345X04/form4.xml",
+    "https://www.sec.gov/Archives/edgar/data/1018724/000112760223011192/xslF345X04/form4.xml",
+    "https://www.sec.gov/Archives/edgar/data/1018724/000112760223011192/xslF345X04/form4.xml",
+    "https://www.sec.gov/Archives/edgar/data/1018724/000110465923042198/xslF345X04/tm2311443-1_4seq1.xml",
+    "https://www.sec.gov/Archives/edgar/data/1018724/000110465923028442/xslF345X03/tm238276-2_4seq1.xml",
+    "https://www.sec.gov/Archives/edgar/data/1018724/000110465923028442/xslF345X03/tm238276-2_4seq1.xml",
+    "https://www.sec.gov/Archives/edgar/data/1018724/000110465923028445/xslF345X03/tm238276-1_4seq1.xml",
+    "https://www.sec.gov/Archives/edgar/data/1018724/000112760223007056/xslF345X03/form4.xml",
+    "https://www.sec.gov/Archives/edgar/data/1018724/000112760223007056/xslF345X03/form4.xml",
+]
 
 
 @timer
@@ -16,15 +29,12 @@ def thread_function():
     while request_count > 0:
 
         try:
-            response = Request.sec_request(url=example_url)
+            filings = get_filings(ticker_symbol="COST", form_types=FORM_TYPES)
+            print(f"request {request_count} was successful")
+            request_count -= 1
         except ConnectionError as e:
             print(f"Request was not successful: {e}")
             continue
-        if response.status_code == 200:
-            request_count -= 1
-            print(f"{REQUEST_COUNT - request_count} request was successful")
-        else:
-            print(f"different status code: {response.status_code}")
 
 
 if __name__ == "__main__":

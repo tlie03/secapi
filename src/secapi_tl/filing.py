@@ -14,7 +14,7 @@ class Filing:
                  ticker_symbol: str = None,
                  cik: str = None,
                  filing_date: date = None,
-                 report_date: date = None,
+                 report_date: date | None = None,
                  acceptance_date_time: datetime = None,
                  act: str = None,
                  form: str = None,
@@ -46,7 +46,7 @@ class Filing:
         self._ticker_symbol: str = ticker_symbol
         self._cik: str = cik
         self._filing_date: date = filing_date
-        self._report_date: date = report_date
+        self._report_date: date | None = report_date
         self._acceptance_date_time: datetime = acceptance_date_time
         self._act: str = act
         self._form: str = form
@@ -67,7 +67,10 @@ class Filing:
         """
         accession_number: str = filing_dict.get('accessionNumber')
         filing_date: date = datetime.strptime(filing_dict.get("filingDate"), '%Y-%m-%d').date()
-        report_date: date = datetime.strptime(filing_dict.get("reportDate"), '%Y-%m-%d').date()
+        if filing_dict.get("reportDate") == '':
+            report_date = None
+        else:
+            report_date: date = datetime.strptime(filing_dict.get("reportDate"), '%Y-%m-%d').date()
         ticker_symbol: str = filing_dict.get('tickerSymbol')
         cik: str = filing_dict.get('cik')
 
