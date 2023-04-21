@@ -1,8 +1,7 @@
-from src.secapi_tl.filing_query import get_filings, Request
+from src.secapi_tl.filing_query import get_filings
 from threading import Thread
 from testing.helper.timer import timer
 import time
-from random import choice
 
 REQUEST_COUNT = request_count = 500
 THREAD_COUNT = 6

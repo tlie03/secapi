@@ -11,11 +11,12 @@ These issues disappeared with the implementation as a static method.
 import time
 import math
 import requests
+from requests_random_user_agent import USER_AGENTS
+from random import choice
 from ratelimit import limits, sleep_and_retry
 
 SEC_REQUEST_COUNT = 1
 SEC_PERIOD = 0.1
-SEC_HEADER = {'User-Agent': "myUserAgent"}
 
 
 class Request:
@@ -23,13 +24,12 @@ class Request:
     @staticmethod
     @sleep_and_retry
     @limits(calls=SEC_REQUEST_COUNT, period=SEC_PERIOD)
-    def sec_request(url: str, header: dict = None, retries: int=5):
-        if header is None:
-            header = SEC_HEADER
+    def sec_request(url: str, retries: int=5):
+        header = {"User-Agent": choice(USER_AGENTS)}
         response = requests.get(url=url, headers=header)
         if response.status_code != 200 and retries > 0:
             time.sleep(20 * (1 / math.exp(retries-1)))
-            response = Request.sec_request(url=url, header=header, retries=retries-1)
+            response = Request.sec_request(url=url, retries=retries-1)
 
         # raise Connection error on deepest function call if there was no successful response for all tries
         if response.status_code != 200 and retries == 0:

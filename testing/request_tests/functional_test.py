@@ -3,7 +3,7 @@ from unittest import TestCase
 from datetime import datetime
 from datetime import date
 
-from src.secapi_tl.filing_query import get_filings
+from src.secapi_tl import get_filings, is_registered
 
 class RequestFilings(TestCase):
 
@@ -12,7 +12,7 @@ class RequestFilings(TestCase):
         self.assertEqual(len(filings), 31)
 
     def test_filing_contents_types(self):
-        filings = get_filings(ticker_symbol="COST", form_types="4", date_from="2021-03-09", date_to="2021-12-12")
+        filings = get_filings(ticker_symbol="COST", form_types=["4"], date_from="2021-03-09", date_to="2021-12-12")
         for filing in filings:
             self.assertEqual(type(filing.accession_number), str)
             self.assertEqual(type(filing.ticker_symbol), str)
@@ -31,4 +31,6 @@ class RequestFilings(TestCase):
             self.assertEqual(type(filing.primary_document), str)
             self.assertEqual(type(filing.primary_doc_description), str)
 
-
+    def test_DISCK(self):
+        self.assertFalse(is_registered("DISCK"))
+        #filings = get_filings(ticker_symbol="DISCK", form_types=["4"])
