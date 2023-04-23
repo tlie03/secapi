@@ -7,16 +7,21 @@ import requests
 from requests_random_user_agent import USER_AGENTS
 from random import choice
 from ratelimit import limits, sleep_and_retry
+from threading import Semaphore
 
-SEC_REQUEST_COUNT = 1
-SEC_PERIOD = 0.11
+SEC_REQUEST_COUNT = 10
+SEC_PERIOD = 1
+
+SEMAPHORE = Semaphore(value=1)
 
 
 @sleep_and_retry
 @limits(calls=SEC_REQUEST_COUNT, period=SEC_PERIOD)
 def sec_request(url: str):
     header = {"User-Agent": choice(USER_AGENTS)}
+    SEMAPHORE.acquire()
     response = requests.get(url=url, headers=header)
+    SEMAPHORE.release()
 
     if response.status_code != 200:
         raise ConnectionError(f"invalid response status code {response.status_code}")

@@ -24,13 +24,11 @@ URLS = [
 @timer
 def thread_function():
     global request_count
-
     while request_count > 0:
-
         try:
+            request_count -= 1
             filings = get_filings(ticker_symbol="COST", form_types=FORM_TYPES)
             print(f"request {request_count} was successful")
-            request_count -= 1
         except ConnectionError as e:
             print(f"Request was not successful: {e}")
             continue
