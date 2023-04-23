@@ -1,11 +1,11 @@
 from .filing_query import get_filings
-from .request import Request
+from .request import sec_request
 from .key_mapper import (is_registered, get_cik)
 from .filing import Filing
 
 filing_query = ['get_filings']
 
-util = ['Request',
+util = ['sec_request',
         'is_registered',
         'get_cik']
 

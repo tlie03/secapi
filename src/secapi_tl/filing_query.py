@@ -2,7 +2,7 @@ from typing import List
 from warnings import warn
 from openDateRange import DateRange
 
-from .request import Request
+from .request import sec_request
 from .key_mapper import get_cik
 from .filing import Filing
 
@@ -59,7 +59,7 @@ def get_filings(ticker_symbol: str,
     cik_formatted = ('0' * length_diff) + cik
     submissions_url = BASE_URL_SUBMISSIONS + CIK_STRING + cik_formatted + JSON_FILE
 
-    response = Request.sec_request(url=submissions_url)
+    response = sec_request(url=submissions_url)
     submissions_dict = response.json()
 
     filings = []
@@ -73,7 +73,7 @@ def get_filings(ticker_symbol: str,
     for file in files:
         if search_daterange.intersects(date_from=file['filingFrom'], date_to=file['filingTo']):
             url = BASE_URL_SUBMISSIONS + file['name']
-            response = Request.sec_request(url=url)
+            response = sec_request(url=url)
             data = response.json()
             filings += filter_filings(data, checker, information_keys, cik, ticker_symbol)
 
