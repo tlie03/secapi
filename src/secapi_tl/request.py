@@ -20,8 +20,12 @@ SEMAPHORE = Semaphore(value=1)
 def sec_request(url: str):
     header = {"User-Agent": choice(USER_AGENTS)}
     SEMAPHORE.acquire()
-    response = requests.get(url=url, headers=header)
-    SEMAPHORE.release()
+    try:
+        response = requests.get(url=url, headers=header)
+        SEMAPHORE.release()
+    except Exception as err:
+        SEMAPHORE.release()
+        raise err
 
     if response.status_code != 200:
         raise ConnectionError(f"invalid response status code {response.status_code}")
