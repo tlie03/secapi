@@ -3,9 +3,13 @@ from unittest import TestCase
 from datetime import datetime
 from datetime import date
 
-from src.secapi_tl import get_filings, is_registered
+from src.secapi_tl import get_filings, is_registered, filter_tickers
 
 class RequestFilings(TestCase):
+    test_tickers = ["AAPL",
+                    "msft",
+                    "adsfa",
+                    "TSLa"]
 
     def test_filing_amounts(self):
         filings = get_filings(ticker_symbol="COST", form_types="4", date_from="2021-03-09", date_to="2021-12-12")
@@ -34,3 +38,8 @@ class RequestFilings(TestCase):
     def test_DISCK(self):
         self.assertFalse(is_registered("DISCK"))
         #filings = get_filings(ticker_symbol="DISCK", form_types=["4"])
+
+    def test_filter_tickers(self):
+        filtered_tickers = filter_tickers(RequestFilings.test_tickers)
+        self.assertEqual(filtered_tickers, ["AAPL", "MSFT", "TSLA"])
+

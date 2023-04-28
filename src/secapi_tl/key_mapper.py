@@ -1,3 +1,4 @@
+from typing import List
 from .request import sec_request
 
 # a file maintained by the sec that holds all ticker symbols and their corresponding cik
@@ -27,3 +28,12 @@ def is_registered(ticker_symbol: str) -> bool:
             return True
     else:
         return False
+
+
+def filter_tickers(tickers: List[str]) -> List[str]:
+    tickers = [ticker.upper() for ticker in tickers]
+    response = sec_request(SEC_CIK_TICKERS_DATA)
+    data = response.json()
+    tickers_registered = [entry["ticker"] for entry in data.values()]
+
+    return [ticker for ticker in tickers if ticker in tickers_registered]
