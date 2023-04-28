@@ -1,10 +1,12 @@
-from src.secapi_tl.filing_query import get_filings
+import random
+
+from src.secapi_tl.filing_query import sec_request
 from threading import Thread
 from testing.helper.timer import timer
 import time
 
 REQUEST_COUNT = request_count = 500
-THREAD_COUNT = 6
+THREAD_COUNT = 10
 FORM_TYPES = ["3", "4", "5", "3/A", "4/A", "5/A"]
 URLS = [
     "https://www.sec.gov/Archives/edgar/data/1018724/000112760223012687/xslF345X04/form4.xml",
@@ -27,7 +29,7 @@ def thread_function():
     while request_count > 0:
         try:
             request_count -= 1
-            filings = get_filings(ticker_symbol="COST", form_types=FORM_TYPES)
+            data = sec_request(random.choice(URLS))
             print(f"request {request_count} was successful")
         except ConnectionError as e:
             print(f"Request was not successful: {e}")
