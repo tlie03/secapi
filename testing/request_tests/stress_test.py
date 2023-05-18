@@ -1,6 +1,8 @@
 import random
 
-from src.secapi_tl.filing_query import sec_request
+from src.secapi_tl.request import sec_request
+from src.secapi_tl.filing_query import get_filings
+from src.secapi_tl.key_mapper import get_registered
 from threading import Thread
 from testing.helper.timer import timer
 import time
@@ -21,6 +23,7 @@ URLS = [
     "https://www.sec.gov/Archives/edgar/data/1018724/000112760223007056/xslF345X03/form4.xml",
     "https://www.sec.gov/Archives/edgar/data/1018724/000112760223007056/xslF345X03/form4.xml",
 ]
+TICKERS = get_registered()
 
 
 @timer
@@ -29,7 +32,12 @@ def thread_function():
     while request_count > 0:
         try:
             request_count -= 1
-            data = sec_request(random.choice(URLS))
+            random_number = random.randint(0, 10)
+            if random_number % 2 == 0:
+                data = sec_request(random.choice(URLS))
+                print(f"xml ownership document size: {len(data.content)}")
+            else:
+                data = get_filings(random.choice(TICKERS))
             print(f"request {request_count} was successful")
         except ConnectionError as e:
             print(f"Request was not successful: {e}")

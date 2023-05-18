@@ -5,6 +5,7 @@ from datetime import date
 
 from src.secapi_tl import get_filings, is_registered, filter_tickers
 
+
 class RequestFilings(TestCase):
     test_tickers = ["AAPL",
                     "msft",
@@ -37,9 +38,11 @@ class RequestFilings(TestCase):
 
     def test_DISCK(self):
         self.assertFalse(is_registered("DISCK"))
-        #filings = get_filings(ticker_symbol="DISCK", form_types=["4"])
 
     def test_filter_tickers(self):
         filtered_tickers = filter_tickers(RequestFilings.test_tickers)
         self.assertEqual(filtered_tickers, ["AAPL", "MSFT", "TSLA"])
 
+    def test_cik_as_ticker_symbol(self):
+        filings = get_filings(ticker_symbol="0000864683", form_types=["4"])
+        self.assertEqual(len(filings), 709)

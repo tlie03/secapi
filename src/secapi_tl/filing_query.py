@@ -1,6 +1,7 @@
 from typing import List
 from warnings import warn
 from openDateRange import DateRange
+import re
 
 from .request import sec_request
 from .key_mapper import get_cik
@@ -27,6 +28,8 @@ BASE_URL_SUBMISSIONS = r'https://data.sec.gov/submissions/'
 
 CIK_STRING = r'CIK'
 REQUIRED_CIK_LENGTH = 10
+CIK_REGEX = re.compile('\d{10}')
+
 
 
 def get_filings(ticker_symbol: str,
@@ -54,12 +57,17 @@ def get_filings(ticker_symbol: str,
             warn("filing_information list contains key that does not exist")
 
     # get the main submissions file
-    cik = get_cik(ticker_symbol)
+    # the ticker symbol can also be a cik
+    if CIK_REGEX.fullmatch(ticker_symbol):
+        cik = ticker_symbol
+    else:
+        cik = get_cik(ticker_symbol)
     length_diff = REQUIRED_CIK_LENGTH - len(cik)
     cik_formatted = ('0' * length_diff) + cik
     submissions_url = BASE_URL_SUBMISSIONS + CIK_STRING + cik_formatted + JSON_FILE
 
     response = sec_request(url=submissions_url)
+    print(f"submission response size: {len(response.content)}")
     submissions_dict = response.json()
 
     filings = []
