@@ -1,13 +1,13 @@
 import unittest
-from src.secapi_tl.key_mapper import get_cik, is_registered
+from src.secapi_tl.key_mapper import ticker_to_cik, is_registered
 
 
 class TestCase(unittest.TestCase):
 
     def test_functional_get_cik(self):
-        cik = get_cik("AAPL")
+        cik = ticker_to_cik("AAPL")
         self.assertEqual(cik, "320193")
-        cik = get_cik("msft")
+        cik = ticker_to_cik("msft")
         self.assertEqual(cik, "789019")
 
 

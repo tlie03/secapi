@@ -4,7 +4,7 @@ from openDateRange import DateRange
 import re
 
 from .request import sec_request
-from .key_mapper import get_cik
+from .key_mapper import ticker_to_cik
 from .filing import Filing
 
 # list of keys for all existing metadata points
@@ -61,7 +61,7 @@ def get_filings(ticker_symbol: str,
     if CIK_REGEX.fullmatch(ticker_symbol):
         cik = ticker_symbol
     else:
-        cik = get_cik(ticker_symbol)
+        cik = ticker_to_cik(ticker_symbol)
     length_diff = REQUIRED_CIK_LENGTH - len(cik)
     cik_formatted = ('0' * length_diff) + cik
     submissions_url = BASE_URL_SUBMISSIONS + CIK_STRING + cik_formatted + JSON_FILE

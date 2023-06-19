@@ -5,7 +5,7 @@ from .request import sec_request
 SEC_CIK_TICKERS_DATA = r"https://www.sec.gov/files/company_tickers.json"
 
 
-def get_cik(ticker_symbol: str) -> str:
+def ticker_to_cik(ticker_symbol: str) -> str:
     # returns the cik that belongs to the company with the given ticker symbol
     ticker = ticker_symbol.upper()
     response = sec_request(SEC_CIK_TICKERS_DATA)
@@ -39,7 +39,13 @@ def filter_tickers(tickers: List[str]) -> List[str]:
     return [ticker for ticker in tickers if ticker in tickers_registered]
 
 
-def get_registered() -> List:
+def get_registered_tickers() -> List:
     response = sec_request(SEC_CIK_TICKERS_DATA)
     data = response.json()
     return [entry["ticker"] for entry in data.values()]
+
+
+def get_registered_ciks() -> List:
+    response = sec_request(SEC_CIK_TICKERS_DATA)
+    data = response.json()
+    return [entry["cik_str"] for entry in data.values()]
