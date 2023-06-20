@@ -65,14 +65,14 @@ class Filing:
         Creates a filing object from the json that is returned by the web request to the sec server.
         The values are converted to appropriate python types.
         """
-        accession_number: str = filing_dict.get('accessionNumber')
+        accession_number: str = str(filing_dict.get('accessionNumber'))
         filing_date: date = datetime.strptime(filing_dict.get("filingDate"), '%Y-%m-%d').date()
         if filing_dict.get("reportDate") == '':
             report_date = None
         else:
             report_date: date = datetime.strptime(filing_dict.get("reportDate"), '%Y-%m-%d').date()
-        ticker_symbol: str = filing_dict.get('tickerSymbol')
-        cik: str = filing_dict.get('cik')
+        ticker_symbol: str = str(filing_dict.get('tickerSymbol'))
+        cik: str = str(filing_dict.get('cik'))
 
         datetime_str = filing_dict.get("acceptanceDateTime")
         datetime_str = datetime_str.replace("T", " ")
