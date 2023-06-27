@@ -67,7 +67,6 @@ def get_filings(ticker_symbol: str,
     submissions_url = BASE_URL_SUBMISSIONS + CIK_STRING + cik_formatted + JSON_FILE
 
     response = sec_request(url=submissions_url)
-    print(f"submission response size: {len(response.content)}")
     submissions_dict = response.json()
 
     filings = []
