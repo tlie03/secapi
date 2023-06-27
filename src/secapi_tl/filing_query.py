@@ -28,7 +28,7 @@ BASE_URL_SUBMISSIONS = r'https://data.sec.gov/submissions/'
 
 CIK_STRING = r'CIK'
 REQUIRED_CIK_LENGTH = 10
-CIK_REGEX = re.compile('\d{10}')
+CIK_REGEX = re.compile('\d{0,10}')
 
 
 
@@ -41,7 +41,7 @@ def get_filings(ticker_symbol: str,
     This method returns the metadata for all filings of the given form types that belong to the company
     with the given ticker and have been filed within the given daterange.
     The returned metadata only contains the datapoints given in the filing_information parameter.
-    The ticker symbol is the only information that must be given.
+    The ticker symbol is the only information that must be given but it can also be a cik.
     If the form_type parameter is set to None all form types will be returned.
     If the filing_information parameter is set to None all metadata points will be returned.
     """
