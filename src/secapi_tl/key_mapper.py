@@ -39,13 +39,13 @@ def filter_tickers(tickers: List[str]) -> List[str]:
     return [ticker for ticker in tickers if ticker in tickers_registered]
 
 
-def get_registered_tickers() -> List:
+def get_registered_tickers() -> List[str]:
     response = sec_request(SEC_CIK_TICKERS_DATA)
     data = response.json()
     return [entry["ticker"] for entry in data.values()]
 
 
-def get_registered_ciks() -> List:
+def get_registered_ciks() -> List[str]:
     response = sec_request(SEC_CIK_TICKERS_DATA)
     data = response.json()
-    return [entry["cik_str"] for entry in data.values()]
+    return [str(entry["cik_str"]) for entry in data.values()]
