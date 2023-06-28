@@ -1,14 +1,20 @@
+"""
+This script tries to test for a data limit on the SEC API.
+"""
+from threading import Thread
+from src.secapi_tl import get_registered_tickers, sec_request
 import random
 
-from src.secapi_tl.request import sec_request
-from src.secapi_tl.filing_query import get_filings
-from src.secapi_tl.key_mapper import get_registered_tickers
-from threading import Thread
-from testing.helper.timer import timer
-import time
+
+REQUIRED_CIK_LENGTH = 10
+BASE_URL_SUBMISSIONS = "https://data.sec.gov/submissions/"
+CIK_STRING = "CIK"
+JSON_FILE = ".json"
+
+THREAD_COUNT = 5
+
 
 REQUEST_COUNT = request_count = 500
-THREAD_COUNT = 10
 FORM_TYPES = ["3", "4", "5", "3/A", "4/A", "5/A"]
 URLS = [
     "https://www.sec.gov/Archives/edgar/data/1018724/000112760223012687/xslF345X04/form4.xml",
@@ -26,39 +32,24 @@ URLS = [
 TICKERS = get_registered_tickers()
 
 
-@timer
-def thread_function():
+def thread_func():
     global request_count
     while request_count > 0:
         try:
             request_count -= 1
-            random_number = random.randint(0, 10)
-            if random_number % 2 == 0:
-                data = sec_request(random.choice(URLS))
-                print(f"xml ownership document size: {len(data.content)}")
-            else:
-                data = get_filings(random.choice(TICKERS))
+            data = sec_request(random.choice(URLS))
+            print(f"xml ownership document size: {len(data.content)}")
             print(f"request {request_count} was successful")
         except ConnectionError as e:
             print(f"Request was not successful: {e}")
             continue
 
 
-if __name__ == "__main__":
+def execute1():
     threads = []
     for i in range(THREAD_COUNT):
-        threads.append(Thread(target=thread_function))
-
-    start_time = time.time()
-
-    for thread in threads:
+        thread = Thread(target=thread_func)
+        threads.append(thread)
         thread.start()
 
-    for thread in threads:
-        thread.join()
-
-    end_time = time.time()
-
-    print(f"total time: {end_time - start_time}")
-    print(f"number of requests: {REQUEST_COUNT}")
-    print(f"requests per secound: {REQUEST_COUNT / (end_time - start_time)}")
+    return threads

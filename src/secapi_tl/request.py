@@ -16,9 +16,19 @@ SESSION = requests.Session()
 FAKER = Faker()
 
 
+def sec_request(url: str):
+    """
+    I dont provide the sec_request_decorated function because for some reason the ratelimit decorator does not
+    work when some function calls to the decorated function are done locally in this python package and others are
+    done from outside the package. I dont know why this is the case but it is. For example using sec_request_decorated
+    and get_filings in the same project can cause problems. So I provide this function instead which is just a wrapper
+    """
+    return sec_request_decorated(url)
+
+
 @sleep_and_retry
 @limits(calls=SEC_REQUEST_COUNT, period=SEC_PERIOD)
-def sec_request(url: str):
+def sec_request_decorated(url: str):
     header = {"User-Agent": create_user_agent()}
     try:
         response = SESSION.get(url=url, headers=header)
