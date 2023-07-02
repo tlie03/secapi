@@ -38,12 +38,23 @@ def get_filings(ticker_symbol: str,
                 form_types: List[str] = None,
                 filing_information: List[str] = None) -> List[Filing]:
     """
-    This method returns the metadata for all filings of the given form types that belong to the company
-    with the given ticker and have been filed within the given daterange.
-    The returned metadata only contains the datapoints given in the filing_information parameter.
-    The ticker symbol is the only information that must be given but it can also be a cik.
-    If the form_type parameter is set to None all form types will be returned.
-    If the filing_information parameter is set to None all metadata points will be returned.
+    Returns a list of filings that match the specified parameters.
+    The filings are returned as Filing objects.
+    WARNING: Excessive use of this function can lead to 429 errors.
+             Even though the function uses the secapi_tl.request method for its requests.
+             This is probably because the sec considers many requests to the https://data.sec.gov/submissions/ url
+             as a scripted bot and thus blocks requests to such urls.
+             I did not set an additional rate limit to this function. If this function is used excessively,
+             and causes problems it might be necessary to set a rate limit to this function.
+
+    :param ticker_symbol: ticker symbol of the company can also be the cik of the company (str)
+    :param date_from: date from which the filings should be returned
+    :param date_to: date to which the filings should be returned
+    :param form_types: list of form types that should be returned
+    :param filing_information: list of metadata points that should be returned.
+           If not set, all metadata points are returned.
+
+    :return: list of filings that match the set parameters
     """
 
     search_daterange = DateRange(date_from=date_from, date_to=date_to)
