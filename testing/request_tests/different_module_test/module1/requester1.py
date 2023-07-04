@@ -14,7 +14,7 @@ JSON_FILE = ".json"
 THREAD_COUNT = 5
 
 
-REQUEST_COUNT = request_count = 500
+REQUEST_COUNT = request_count = 100
 FORM_TYPES = ["3", "4", "5", "3/A", "4/A", "5/A"]
 URLS = [
     "https://www.sec.gov/Archives/edgar/data/1018724/000112760223012687/xslF345X04/form4.xml",
@@ -38,10 +38,10 @@ def thread_func():
         try:
             request_count -= 1
             data = sec_request(random.choice(URLS))
-            print(f"xml ownership document size: {len(data.content)}")
-            print(f"request {request_count} was successful")
+            # print(f"xml ownership document size: {len(data.content)}")
+            # print(f"request {request_count} was successful")
         except ConnectionError as e:
-            print(f"Request was not successful: {e}")
+            # print(f"Request was not successful: {e}")
             continue
 
 

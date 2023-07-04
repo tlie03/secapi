@@ -4,8 +4,8 @@ from src.secapi_tl import get_registered_ciks, get_filings
 from ratelimit import limits, sleep_and_retry
 
 
-CALLS = 1
-PERIOD = 2
+CALLS = 10
+PERIOD = 1
 THREAD_COUNT = 5
 ciks_total = get_registered_ciks()
 
@@ -19,9 +19,14 @@ def limited_get_filings(ticker_symbol: str) -> List[str]:
 
 def thread_func(ciks: List[str]):
     for i, cik in enumerate(ciks):
-        print(f"{i} / {len(ciks)}")
-        filings = limited_get_filings(cik)
-        print(len(filings))
+        # print(f"{i} / {len(ciks)}")
+        successful = False
+        while not successful:
+            try:
+                filings = limited_get_filings(cik)
+                successful = True
+            except Exception as e:
+                print(e)
 
 
 def execute2():
