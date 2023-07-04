@@ -14,6 +14,7 @@ SEC_PERIOD = 0.101
 SEMAPHORE = Semaphore(value=1)
 SESSION = requests.Session()
 FAKER = Faker()
+COUNTER = 0
 
 
 @sleep_and_retry
@@ -35,8 +36,10 @@ def sec_request(url: str):
         raise err
 
     if response.status_code != 200:
-        print(response.text)
-        raise ConnectionError(f"invalid response status code {response.status_code}")
+        if response.status_code == 429:
+            raise TooManyRequestsError(response.text)
+        else:
+            raise ConnectionError(f"invalid response status code {response.status_code}")
     return response
 
 
@@ -48,3 +51,15 @@ def create_user_agent() -> str:
     """
     ua = f"{FAKER.first_name()} {FAKER.last_name()} {FAKER.email()}"
     return ua
+
+
+class TooManyRequestsError(ConnectionError):
+    """
+    Error that is used for responses with status code 429.
+    """
+
+    def __init__(self, response_txt: str):
+        self._response_txt = response_txt
+
+    def __str__(self):
+        return f"TooManyRequestsError. The following text was send with the response: {self._response_txt}"
