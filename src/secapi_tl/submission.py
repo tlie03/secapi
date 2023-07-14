@@ -3,10 +3,10 @@ from datetime import datetime
 from datetime import date
 
 
-class Filing:
+class Submission:
     """
-    The filing class contains all the metadata of a filing.
-    It is used to store the filings metadata in a uniform format.
+    The submission class stores all metadata of a submission.
+    It is used to store the submission metadata in a uniform format.
     """
 
     def __init__(self,
@@ -60,9 +60,9 @@ class Filing:
         self._primary_doc_description: str = primary_doc_description
 
     @staticmethod
-    def from_dict(filing_dict: dict) -> Filing:
+    def _from_dict(filing_dict: dict) -> Submission:
         """
-        Creates a filing object from the json that is returned by the web request to the sec server.
+        Creates a submission object from the json that is returned by the web request to the sec server.
         The values are converted to appropriate python types.
         """
         accession_number: str = str(filing_dict.get('accessionNumber'))
@@ -92,22 +92,22 @@ class Filing:
         primary_document: str = filing_dict.get('primaryDocument')
         primary_doc_description: str = filing_dict.get('primaryDocDescription')
 
-        return Filing(accession_number=accession_number,
-                      ticker_symbol=ticker_symbol,
-                      cik=cik,
-                      filing_date=filing_date,
-                      report_date=report_date,
-                      acceptance_date_time=acceptance_date_time,
-                      act=act,
-                      form=form,
-                      file_number=file_number,
-                      film_number=film_number,
-                      items=items,
-                      size=size,
-                      is_xbrl=is_xbrl,
-                      is_inline_xbrl=is_inline_xbrl,
-                      primary_document=primary_document,
-                      primary_doc_description=primary_doc_description)
+        return Submission(accession_number=accession_number,
+                          ticker_symbol=ticker_symbol,
+                          cik=cik,
+                          filing_date=filing_date,
+                          report_date=report_date,
+                          acceptance_date_time=acceptance_date_time,
+                          act=act,
+                          form=form,
+                          file_number=file_number,
+                          film_number=film_number,
+                          items=items,
+                          size=size,
+                          is_xbrl=is_xbrl,
+                          is_inline_xbrl=is_inline_xbrl,
+                          primary_document=primary_document,
+                          primary_doc_description=primary_doc_description)
 
     @property
     def accession_number(self) -> str:

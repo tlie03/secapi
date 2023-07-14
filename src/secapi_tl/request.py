@@ -19,7 +19,7 @@ COUNTER = 0
 
 @sleep_and_retry
 @limits(calls=SEC_REQUEST_COUNT, period=SEC_PERIOD)
-def sec_request(url: str):
+def sec_request(url: str) -> requests.Response:
     """
     This method performs the request to the sec.gov domain.
     It is rate limited to SEC_REQUEST_COUNT requests per SEC_PERIOD seconds.
@@ -27,7 +27,9 @@ def sec_request(url: str):
 
     :param url: the url to request
     :return: the response (a response object from the requests module)
-    :raises ConnectionError: if the response status code is not 200
+    :raises TooManyRequestsError: if the response status code is 429. This can be the case when the requested
+    url is under too much load. Even though the amount of total requests is in the boundaries set by the sec.
+    :raises ConnectionError: if the response status code is not 200 or 429
     """
     header = {"User-Agent": create_user_agent()}
     try:

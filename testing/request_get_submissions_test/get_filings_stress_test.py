@@ -8,7 +8,7 @@ a large amount of data using the get_filings method.
 """
 from typing import List
 from threading import Thread
-from src.secapi_tl import get_registered_ciks, get_filings
+from src.secapi_tl import get_registered_ciks, get_submissions
 from ratelimit import limits, sleep_and_retry
 
 THREAD_COUNT = 5
@@ -21,7 +21,7 @@ PERIOD = 2
 @sleep_and_retry
 @limits(calls=CALLS, period=PERIOD)
 def limited_get_filings(ticker_symbol: str) -> List[str]:
-    filings = get_filings(ticker_symbol=ticker_symbol)
+    filings = get_submissions(ticker_symbol_or_cik=ticker_symbol)
     return filings
 
 

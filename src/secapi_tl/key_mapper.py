@@ -43,7 +43,7 @@ def is_registered(ticker_symbol: str) -> bool:
         return False
 
 
-def filter_tickers(tickers: List[str]) -> List[str]:
+def filter_tickers_registered(tickers: List[str]) -> List[str]:
     """
     takes a list of tickers as input and returns a filtered list
     that only contains tickers that are found to be registered at the sec.
