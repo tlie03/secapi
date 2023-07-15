@@ -8,7 +8,7 @@ filing_query = ['get_submissions']
 util = [
     'sec_request',
     'is_registered',
-    'get_cik',
+    'ticker_to_cik',
     'filter_tickers_registered',
     'get_registered_tickers',
     'get_registered_ciks',
