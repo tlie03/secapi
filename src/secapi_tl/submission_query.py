@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 from warnings import warn
 from openDateRange import DateRange
 import re
@@ -35,7 +35,7 @@ CIK_REGEX = re.compile('\d{0,10}')
 def get_submissions(ticker_symbol_or_cik: str,
                     date_from: str = None,
                     date_to: str = None,
-                    form_types: List[str] = None,
+                    form_types: Union[List[str], str] = None,
                     submission_information: List[str] = None) -> List[Submission]:
     """
     Returns a list of submissions that match the given parameters.
@@ -49,7 +49,7 @@ def get_submissions(ticker_symbol_or_cik: str,
     implement your own strategy to handle this error since this error depends strongly on the usage of this function.
     !!!
 
-    :param ticker_symbol_or_cik: ticker symbol or cik of the company
+    :param ticker_symbol_or_cik: ticker symbol or cik of the company cik should be a string
     :param date_from: the date from which the submissions should be returned "YYYY-MM-DD"
     :param date_to: the date to which the submissions should be returned "YYYY-MM-DD"
     :param form_types: submission form types that should be returned. Valid form types are all form types that
@@ -78,7 +78,10 @@ def get_submissions(ticker_symbol_or_cik: str,
     search_daterange = DateRange(date_from=date_from, date_to=date_to)
     DateRange.DATE_FORMAT = format_before
 
+    if isinstance(form_types, str):
+        form_types = [form_types]
     checker = create_filing_checker(search_daterange, form_types)
+
     if submission_information is None:
         information_keys = FILING_INFORMATION_KEYS
     else:
