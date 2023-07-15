@@ -2,7 +2,7 @@ import random
 
 from src.secapi_tl.request import sec_request
 from src.secapi_tl.submission_query import get_submissions
-from src.secapi_tl.key_mapper import get_registered_tickers
+from src.secapi_tl.utility_functions import get_registered_tickers
 from threading import Thread
 from testing.helper.timer import timer
 import time

@@ -1,5 +1,5 @@
 import unittest
-from src.secapi_tl.key_mapper import ticker_to_cik, is_registered
+from src.secapi_tl.utility_functions import ticker_to_cik, is_registered
 
 
 class TestCase(unittest.TestCase):

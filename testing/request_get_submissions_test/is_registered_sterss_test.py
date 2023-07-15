@@ -1,7 +1,7 @@
 import os
 import time
 
-from src.secapi_tl.key_mapper import is_registered
+from src.secapi_tl.utility_functions import is_registered
 import json
 
 

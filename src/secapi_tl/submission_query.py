@@ -3,7 +3,7 @@ from openDateRange import DateRange
 import re
 
 from .request import sec_request
-from .key_mapper import ticker_to_cik
+from .utility_functions import ticker_to_cik
 from .submission import Submission
 
 
