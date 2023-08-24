@@ -6,23 +6,21 @@ of requests stays in the boundaries set by the sec.
 import requests
 from faker import Faker
 from ratelimit import limits, sleep_and_retry
-from threading import Semaphore
 
 SEC_REQUEST_COUNT = 1
 SEC_PERIOD = 0.101
+RETRIES = 10
 
-SEMAPHORE = Semaphore(value=1)
 SESSION = requests.Session()
 FAKER = Faker()
-COUNTER = 0
 
 
-@sleep_and_retry
-@limits(calls=SEC_REQUEST_COUNT, period=SEC_PERIOD)
+
+
 def sec_request(url: str, header: dict = None) -> requests.Response:
     """
     This method performs the request to the sec.gov domain.
-    It is rate limited to SEC_REQUEST_COUNT requests per SEC_PERIOD seconds.
+    It uses a rate limited method to make the requests.
     Thereby it ensures that the amount of requests stays in the boundaries set by the sec.
 
     :param url: the url to request
@@ -30,24 +28,38 @@ def sec_request(url: str, header: dict = None) -> requests.Response:
     :return: the response (a response object from the requests module)
     :raises TooManyRequestsError: if the response status code is 429. This can be the case when the requested
     url is under too much load. Even though the amount of total requests is in the boundaries set by the sec.
-    :raises ConnectionError: if the response status code is not 200 or 429
+    :raises ConnectionError: if the response status code is not 200 or 429 and the amount of retries is exceeded.
     """
     if header is None:
         header = {"User-Agent": create_user_agent()}
     elif "User-Agent" not in header:
         header["User-Agent"] = create_user_agent()
 
-    try:
-        response = SESSION.get(url=url, headers=header)
-    except Exception as err:
-        raise err
+    retry = 0
+    success = False
+    while retry < RETRIES and not success:
+        response = limit_request(url=url, header=header)
 
-    if response.status_code != 200:
-        if response.status_code == 429:
-            raise TooManyRequestsError(response.text)
+        if response.status_code != 200:
+            if retry < RETRIES:
+                retry += 1
+                continue
+
+            if response.status_code == 429:
+                raise TooManyRequestsError(response.text)
+            else:
+                raise ConnectionError(f"invalid response status code {response.status_code}")
+
         else:
-            raise ConnectionError(f"invalid response status code {response.status_code}")
+            success = True
+
     return response
+
+
+@sleep_and_retry
+@limits(calls=SEC_REQUEST_COUNT, period=SEC_PERIOD)
+def limit_request(url: str, header: dict) -> requests.Response:
+    return SESSION.get(url=url, headers=header)
 
 
 def create_user_agent() -> str:
