@@ -41,7 +41,8 @@ def sec_request(url: str, header: dict = None) -> requests.Response:
         response = limit_request(url=url, header=header)
 
         if response.status_code != 200:
-            if retry < RETRIES:
+            # RETRIES - 1 so that in the last iteration the error will be raised
+            if retry < RETRIES - 1:
                 retry += 1
                 continue
 
