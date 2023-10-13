@@ -66,11 +66,14 @@ def get_submissions(ticker_symbol_or_cik: str,
     checker = create_filing_checker(search_daterange, form_types)
 
     # get the main submissions file
-    # the ticker symbol can also be a cik
+    ticker_symbol = None
     if CIK_REGEX.fullmatch(ticker_symbol_or_cik):
+        # if ticker_symbol_or_cik matches the CIK_REGEX it is considered to be a cik
+        # otherwise it is considered to be a ticker symbol
         cik = ticker_symbol_or_cik
     else:
         cik = ticker_to_cik(ticker_symbol_or_cik)
+        ticker_symbol = ticker_symbol_or_cik.upper()
     length_diff = REQUIRED_CIK_LENGTH - len(cik)
     cik_formatted = ('0' * length_diff) + cik
     submissions_url = BASE_URL_SUBMISSIONS + CIK_STRING + cik_formatted + JSON_FILE
@@ -82,7 +85,7 @@ def get_submissions(ticker_symbol_or_cik: str,
     # parse recent
     data = submissions_dict['filings']['recent']
     if search_daterange.intersects(date_from=data['filingDate'][-1], date_to=data['filingDate'][0]):
-        filings += filter_filings(data, checker, cik, ticker_symbol_or_cik)
+        filings += filter_filings(raw_filings=data, checker=checker, cik=cik, ticker_symbol=ticker_symbol)
 
     # parse files
     files = submissions_dict['filings']['files']
@@ -91,7 +94,7 @@ def get_submissions(ticker_symbol_or_cik: str,
             url = BASE_URL_SUBMISSIONS + file['name']
             response = sec_request(url=url)
             data = response.json()
-            filings += filter_filings(data, checker, cik, ticker_symbol_or_cik)
+            filings += filter_filings(raw_filings=data, checker=checker, cik=cik, ticker_symbol=ticker_symbol)
 
     return [Submission._from_dict(filing_dict=filing) for filing in filings]
 
@@ -103,7 +106,7 @@ def filter_filings(raw_filings, checker, cik, ticker_symbol):
     forms = raw_filings['form']
     for i, (date, form) in enumerate(zip(dates, forms)):
         if checker(date, form):
-            filing = {'tickerSymbol': ticker_symbol.upper(), 'cik': cik}
+            filing = {'tickerSymbol': ticker_symbol, 'cik': cik}
             for key in FILING_INFORMATION_KEYS:
                 filing[key] = raw_filings[key][i]
             filings.append(filing)

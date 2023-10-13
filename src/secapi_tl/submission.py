@@ -11,7 +11,7 @@ class Submission:
 
     def __init__(self,
                  accession_number: str = None,
-                 ticker_symbol: str = None,
+                 ticker_symbol: str | None = None,
                  cik: str = None,
                  filing_date: date = None,
                  report_date: date | None = None,
