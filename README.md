@@ -1,7 +1,7 @@
 # secapi
 This module provides a set of functions that can be used to query 
 company submissions from the sec. 
-As well as some utility functions that can be used to get sec related 
+Furthermore it provides some utitlity functions that can be used to get sec related 
 information about companies.
 
 ## Technical information
