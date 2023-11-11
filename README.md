@@ -107,7 +107,7 @@ The returned ticker symbols are uppercase.
 ```python
 from secapi_tl import filter_tickers_registered
 
-filter_tickers_registered(["AAPL", "TSLA", "AAP"]) # ["AAPL", "TSLA"]
+filter_tickers_registered(["AAPL", "TSLA", "IFX"]) # ["AAPL", "TSLA"]
 ```
 This method is useful if you want to query submissions for a list of companies
 and you dont know if all of the companies are registered at the sec.
